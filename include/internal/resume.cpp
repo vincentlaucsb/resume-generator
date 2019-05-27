@@ -4,11 +4,21 @@
 
 int main(int argc, char ** argv)
 {
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(argv[1]);
-    if (!result)
-        return -1;
+    if (argc < 2) {
+        std::cout << "Usage: " << argv[0] << " [filename]" << std::endl;
+        exit(1);
+    }
 
+    std::string filename = argv[1];
+    ResumeParser resume(filename);
+    if (!resume.ok()) {
+        std::cout << "Couldn't load " << filename << std::endl;
+        exit(1);
+    }
+
+    std::cout << resume.generate() << std::endl;
+
+    /**
     auto resume_xml = doc.child("Resume");
     auto resume_template = resume_xml.child("Template");
 
@@ -31,7 +41,6 @@ int main(int argc, char ** argv)
         std::cout << err.what() << std::endl;
     }
 
-    /**
     for (pugi::xml_node node : doc)
     {
         resume << node.name() << std::endl;
