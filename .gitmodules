@@ -1,3 +1,9 @@
 [submodule "include/tinyxml2"]
 	path = include/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git
+[submodule "include/pugixml"]
+	path = include/pugixml
+	url = https://github.com/zeux/pugixml.git
+[submodule "include/fmt"]
+	path = include/fmt
+	url = https://github.com/fmtlib/fmt.git

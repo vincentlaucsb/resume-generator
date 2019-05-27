@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Resume>
+  <Address>1600 Pennsylvania Ave</Address>
+  <Phone>510-999-9999</Phone>
+  <Email>meat@spam.com</Email>
+  <Objective>To drink martinis, play volleyball, and work on my tan</Objective>
+  <Education>
+    <School Name="Didn't Study" Years="2013-2018" GPA="2.01">
+      <Item>5x Academic Probation</Item>
+      <Item>Gained ability to operate large motor vehicles without needing full consciousness</Item>
+    </School>
+  </Education>
+</Resume>
