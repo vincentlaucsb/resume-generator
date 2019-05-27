@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Resume>
+  <Template>
+    <Body src="resume.html" />
+  </Template>
   <Address>1600 Pennsylvania Ave</Address>
   <Phone>510-999-9999</Phone>
   <Email>meat@spam.com</Email>

@@ -1,10 +1,5 @@
 #pragma once
-#include "pugixml.hpp"
+#include <fstream>
 
-constexpr char * HTML_BODY = ""
-    "<html>"
-    "<head></head>"
-    "<body>"
-    "</body>"
-    "</html>"
-"";
+#include "pugixml.hpp"
+#include "fmt/format.h"
