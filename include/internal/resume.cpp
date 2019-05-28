@@ -2,51 +2,40 @@
 #include <string>
 #include <iostream>
 
+resume::NodeList process_school(const resume::XmlNode& node) {
+    resume::NodeList list;
+    list.push_back(CTML::Node("h3", node.attribute("Name").as_string()));
+    
+    CTML::Node html_list("ul");
+
+    for (auto item : node.children()) {
+        html_list.AppendChild(CTML::Node("li", item.text().as_string()));
+    }
+
+    list.push_back(html_list);
+
+    return list;
+}
+
 int main(int argc, char ** argv)
 {
-    if (argc < 2) {
-        std::cout << "Usage: " << argv[0] << " [filename]" << std::endl;
+    using namespace resume;
+
+    if (argc < 3) {
+        std::cout << "Usage: " << argv[0] << " [input xml] [output html]" << std::endl;
         exit(1);
     }
 
-    std::string filename = argv[1];
+    std::string filename = argv[1],
+        output = argv[2];
     ResumeParser resume(filename);
+    resume.gen.processors["School"] = process_school;
+
     if (!resume.ok()) {
         std::cout << "Couldn't load " << filename << std::endl;
         exit(1);
     }
 
-    std::cout << resume.generate() << std::endl;
-
-    /**
-    auto resume_xml = doc.child("Resume");
-    auto resume_template = resume_xml.child("Template");
-
-    auto src = resume_template.child("Body").attribute("src").as_string();
-    std::ifstream body_src(src);
-
-    std::string body_template = "";
-    while (!body_src.eof()) {
-        std::string temp;
-        std::getline(body_src, temp);
-        body_template += temp + '\n';
-    }
-
-    std::cout << body_template << std::endl;
-
-    try {
-        std::cout << fmt::format(body_template, fmt::arg("Address", "HI"), fmt::arg("Email", "yolo@swag.com")) << std::endl;
-    }
-    catch (std::runtime_error& err) {
-        std::cout << err.what() << std::endl;
-    }
-
-    for (pugi::xml_node node : doc)
-    {
-        resume << node.name() << std::endl;
-        for (auto child : node.children()) {
-            resume << child.text().as_string() << std::endl;
-        }
-    }
-    **/
+    std::ofstream outfile(output);
+    outfile << resume.generate() << std::endl;
 }
