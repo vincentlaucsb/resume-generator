@@ -13,34 +13,65 @@
 namespace resume {
     // A list of HTML nodes
     using NodeList = std::vector<CTML::Node>;
+    using XmlNode = pugi::xml_node;
+    
+    // A function that takes in an XML node and spits out
+    // HTML output
+    using XmlProcessor = std::function <NodeList(XmlNode)>;
 
     inline NodeList& operator<<(NodeList& nodes, const CTML::Node& node) {
         nodes.push_back(node);
         return nodes;
     }
 
+    class H3 : public CTML::Node {
+    public:
+        H3() : CTML::Node("h3") {}
+    };
+
+    // An HTML <ul> element
     class HtmlList : public CTML::Node {
     public:
         HtmlList() : CTML::Node("ul") {}
 
-        HtmlList& operator<<(const CTML::Node& node) {
-            this->AppendChild(node);
+        HtmlList& operator<<(const std::string& text) {
+            this->AppendChild(CTML::Node("li", text));
             return *this;
         }
     };
-
-    using XmlNode = pugi::xml_node;
 
     class HtmlGenerator {
     public:
         HtmlGenerator() {};
 
-        std::unordered_map < std::string, std::function<NodeList(XmlNode)>> processors = {};
+        void add_section(const XmlNode& section) {
+            auto & body = this->document.body();
+            CTML::Node header("h2", section.name());
+            body.AppendChild(header);
 
-        CTML::Node& add_section(const std::string& name) {
-            CTML::Node node("h2");
-            node.AppendText(name);
-            return this->document.body().AppendChild(node);
+            for (auto child : section.children()) {
+                // Add text to section node
+                if (child.type() == pugi::xml_node_type::node_pcdata) {
+                    body.AppendChild(CTML::Node("p", child.text().as_string()));
+                }
+
+                // Only process XML tags
+                if (child.type() == pugi::xml_node_type::node_element) {
+                    for (auto& node : this->processors[child.name()](child)) {
+                        body.AppendChild(node);
+                    }
+                }
+            }
+        }
+
+        void set_title(const std::string& text) {
+            this->document.AppendNodeToHead(
+                CTML::Node("title", text)
+            );
+        }
+
+        void add_rule(const std::string& section_name, XmlProcessor func) {
+            this->processors[section_name] = func;
         }
 
         std::string get_html() {
@@ -48,6 +79,7 @@ namespace resume {
         }
 
     private:
+        std::unordered_map<std::string, XmlProcessor> processors = {};
         CTML::Document document;
     };
 
@@ -63,41 +95,32 @@ namespace resume {
         }
 
         std::string generate() {
+            this->set_title();
             this->parse_sections();
             return this->gen.get_html();
-
         }
 
-        // Temporary
-        HtmlGenerator gen;
+        void add_rule(const std::string& name, XmlProcessor func) {
+            this->gen.add_rule(name, func);
+        }
 
     private:
         // The parsed resume
+        HtmlGenerator gen;
         pugi::xml_document doc;
         pugi::xml_parse_result result;
 
+        void set_title() {
+            this->gen.set_title(
+                doc.child("Resume").child("Title").text().as_string()
+            );
+        }
+
+        // Parse the different sections of the body
         void parse_sections() {
             for (auto section : doc.child("Resume").child("Body")) {
-                const char * section_name = section.name();
-
-                // HTML node corresponding to this section
-                auto & section_node = this->gen.add_section(section_name);
-
-                for (auto child : section.children()) {
-                    // Add text to section node
-                    if (child.type() == pugi::xml_node_type::node_pcdata) {
-                        section_node.AppendText(child.text().as_string());
-                    }
-
-                    // Only process XML tags
-                    if (child.type() == pugi::xml_node_type::node_element) {
-                        for (auto& node : this->gen.processors[child.name()](child)) {
-                            section_node.AppendChild(node);
-                        }
-                    }
-                }
-
-                std::cout << "Read section " << section_name << std::endl;
+                this->gen.add_section(section);
+                std::cout << "Read section " << section.name() << std::endl;
             }
         }
     };
