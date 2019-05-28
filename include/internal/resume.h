@@ -11,7 +11,24 @@
 #include "fmt/format.h"
 
 namespace resume {
+    // A list of HTML nodes
     using NodeList = std::vector<CTML::Node>;
+
+    inline NodeList& operator<<(NodeList& nodes, const CTML::Node& node) {
+        nodes.push_back(node);
+        return nodes;
+    }
+
+    class HtmlList : public CTML::Node {
+    public:
+        HtmlList() : CTML::Node("ul") {}
+
+        HtmlList& operator<<(const CTML::Node& node) {
+            this->AppendChild(node);
+            return *this;
+        }
+    };
+
     using XmlNode = pugi::xml_node;
 
     class HtmlGenerator {
@@ -62,8 +79,16 @@ namespace resume {
         void parse_sections() {
             for (auto section : doc.child("Resume").child("Body")) {
                 const char * section_name = section.name();
+
+                // HTML node corresponding to this section
                 auto & section_node = this->gen.add_section(section_name);
+
                 for (auto child : section.children()) {
+                    // Add text to section node
+                    if (child.type() == pugi::xml_node_type::node_pcdata) {
+                        section_node.AppendText(child.text().as_string());
+                    }
+
                     // Only process XML tags
                     if (child.type() == pugi::xml_node_type::node_element) {
                         for (auto& node : this->gen.processors[child.name()](child)) {
