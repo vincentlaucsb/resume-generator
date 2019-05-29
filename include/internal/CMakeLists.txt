@@ -1,6 +1,9 @@
 add_executable(resume "")
 target_sources(resume
 	PRIVATE
+		common.h
+		processor.cpp
+		processor.h
 		resume.cpp
 		resume.h
 )

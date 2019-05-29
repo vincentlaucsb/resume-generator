@@ -6,38 +6,12 @@
 #include <unordered_map>
 #include <functional>
 
-#include "pugixml.hpp"
-#include "ctml.hpp"
-#include "fmt/format.h"
+#include "processor.h"
 
 namespace resume {
-    // A list of HTML nodes
-    using NodeList = std::vector<CTML::Node>;
-    using XmlNode = pugi::xml_node;
-    
-    // A function that takes in an XML node and spits out
-    // HTML output
-    using XmlProcessor = std::function <NodeList(XmlNode)>;
-
-    inline NodeList& operator<<(NodeList& nodes, const CTML::Node& node) {
-        nodes.push_back(node);
-        return nodes;
-    }
-
     class H3 : public CTML::Node {
     public:
         H3() : CTML::Node("h3") {}
-    };
-
-    // An HTML <ul> element
-    class HtmlList : public CTML::Node {
-    public:
-        HtmlList() : CTML::Node("ul") {}
-
-        HtmlList& operator<<(const std::string& text) {
-            this->AppendChild(CTML::Node("li", text));
-            return *this;
-        }
     };
 
     class HtmlGenerator {
