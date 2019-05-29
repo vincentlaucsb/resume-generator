@@ -57,8 +57,11 @@ namespace resume {
 
                 // Only process XML tags
                 if (child.type() == pugi::xml_node_type::node_element) {
-                    for (auto& node : this->processors[child.name()](child)) {
-                        body.AppendChild(node);
+                    XmlProcessor processor;
+                    if (this->try_get_rule(child.name(), processor)) {
+                        for (auto& node : processor(child)) {
+                            body.AppendChild(node);
+                        }
                     }
                 }
             }
@@ -74,11 +77,22 @@ namespace resume {
             this->processors[section_name] = func;
         }
 
+
         std::string get_html() {
             return this->document.ToString();
         }
 
     private:
+        bool try_get_rule(const std::string& name, XmlProcessor& out) {
+            if (this->processors.find(name) != this->processors.end()) {
+                out = this->processors[name];
+                return true;
+            }
+
+            std::cout << "[Warning] No rule found for section " << name << "... skipping" << std::endl;
+            return false;
+        }
+
         std::unordered_map<std::string, XmlProcessor> processors = {};
         CTML::Document document;
     };

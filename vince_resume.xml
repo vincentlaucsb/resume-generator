@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Resume>
+  <Body>
+    <Education>
+      <School
+        Name="University of California, Santa Barbara"
+        Years="2013-2018"
+        Subtitle="BA Mathematics -- 3.3 GPA (Dean's List x1)">
+        <List>
+          <Item>Computer Science Coursework (upper division): data structures and algorithms, database management systems, teaching computing science</Item>
+          <Item>Minor in Statistical Science including graduate data mining and time series analysis</Item>
+        </List>
+      </School>
+    </Education>
+    <Projects>
+      <Subheading Title="CSV Parser" Subtitle="https://github.com/vincentlaucsb/csv-parser -- 96% code coverage">
+        <List>
+          <Item>A multi-threaded C++11 CSV parser featuring iterators and ability to parse at over 200MB/s</Item>
+          <Item>Was solely responsible for all aspects of software development from design to implementation and testing</Item>
+          <Item>Utilized continuous integration services to ensure cross-platform, cross-compiler compatibility</Item>
+        </List>
+      </Subheading>
+    </Projects>
+  </Body>
+</Resume>
