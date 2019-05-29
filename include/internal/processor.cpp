@@ -14,9 +14,24 @@ namespace resume {
 
     NodeList process_school(const XmlNode& node) {
         NodeList list;
-        list << CTML::Node("h3", node.attribute("Name").as_string());
-        list << process_list(node.child("List"));
+        list << add_subheading(
+            node.attribute("Name").as_string(),
+            std::string(node.attribute("Degree").as_string()) + " -- " +
+            node.attribute("GPA").as_string())
+            << process_list(node.child("List"));
         return list;
     }
 
+    NodeList process_subheading(const XmlNode& node) {
+        return add_subheading(
+            node.attribute("Title").as_string(),
+            node.attribute("Subtitle").as_string());
+    }
+
+    NodeList add_subheading(const std::string& title, const std::string& subtitle) {
+        NodeList list;
+        list << CTML::Node("h3", title)
+            << CTML::Node("p", subtitle);
+        return list;
+    }
 }
