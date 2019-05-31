@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <deque>
 #include <unordered_map>
 #include <functional>
 
@@ -20,25 +21,8 @@ namespace resume {
 
         void add_section(const XmlNode& section) {
             auto & body = this->document.body();
-            CTML::Node header("h2", section.name());
-            body.AppendChild(header);
-
-            for (auto child : section.children()) {
-                // Add text to section node
-                if (child.type() == pugi::xml_node_type::node_pcdata) {
-                    body.AppendChild(CTML::Node("p", child.text().as_string()));
-                }
-
-                // Only process XML tags
-                if (child.type() == pugi::xml_node_type::node_element) {
-                    XmlProcessor processor;
-                    if (this->try_get_rule(child.name(), processor)) {
-                        for (auto& node : processor(child)) {
-                            body.AppendChild(node);
-                        }
-                    }
-                }
-            }
+            body.AppendChild(CTML::Node("h2", section.name()));
+            this->process_children(section, body);
         }
 
         void set_title(const std::string& text) {
@@ -57,6 +41,28 @@ namespace resume {
         }
 
     private:
+        void process_children(const XmlNode& node, CTML::Node& parent) {
+            CTML::Node * prev_node = nullptr;
+            for (auto& child : node.children()) {
+                // Add text to section node
+                if (child.type() == pugi::xml_node_type::node_pcdata) {
+                    parent.AppendText(child.text().as_string());
+                }
+
+                // Only process XML tags
+                if (child.type() == pugi::xml_node_type::node_element) {
+                    XmlProcessor processor;
+                    if (this->try_get_rule(child.name(), processor)) {
+                        for (auto& html_node : processor(child)) {
+                            prev_node = &(parent.AppendChildGetRef(html_node));
+                        }
+
+                        this->process_children(child, *prev_node);
+                    }
+                }
+            }
+        }
+
         bool try_get_rule(const std::string& name, XmlProcessor& out) {
             if (this->processors.find(name) != this->processors.end()) {
                 out = this->processors[name];

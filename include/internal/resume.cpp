@@ -17,6 +17,7 @@ int main(int argc, char ** argv)
     resume.add_rule("School", process_school);
     resume.add_rule("Subheading", process_subheading);
     resume.add_rule("List", process_list);
+    resume.add_rule("Item", process_item);
 
     if (!resume.ok()) {
         std::cout << "Couldn't load " << filename << std::endl;

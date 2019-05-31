@@ -4,21 +4,24 @@ namespace resume {
     NodeList process_list(const XmlNode& node) {
         NodeList list;
         HtmlList html_list;
-        for (auto item : node.children()) {
-            // TODO: Assert items are of type "item"... or not?
-            html_list << item.text().as_string();
-        }
         list << html_list;
+        return list;
+    }
+
+    NodeList process_item(const XmlNode& node) {
+        NodeList list;
+        list << CTML::Node("li", node.text().as_string());
         return list;
     }
 
     NodeList process_school(const XmlNode& node) {
         NodeList list;
-        list << add_subheading(
+        CTML::Node container("div");
+        container << add_subheading(
             node.attribute("Name").as_string(),
             std::string(node.attribute("Degree").as_string()) + " -- " +
-            node.attribute("GPA").as_string())
-            << process_list(node.child("List"));
+            node.attribute("GPA").as_string());
+        list << container;
         return list;
     }
 

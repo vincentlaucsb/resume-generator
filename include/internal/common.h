@@ -28,6 +28,14 @@ namespace resume {
         return lhs;
     }
 
+    inline CTML::Node& operator<<(CTML::Node& node, NodeList& nodes) {
+        for (auto& child : nodes) {
+            node.AppendChild(child);
+        }
+
+        return node;
+    }
+
     // An HTML <ul> element
     class HtmlList : public CTML::Node {
     public:

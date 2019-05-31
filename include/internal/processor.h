@@ -3,6 +3,7 @@
 
 namespace resume {
     NodeList process_list(const XmlNode& node);
+    NodeList process_item(const XmlNode& node);
     NodeList process_school(const XmlNode& node);
     NodeList process_subheading(const XmlNode& node);
 
