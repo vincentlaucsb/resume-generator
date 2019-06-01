@@ -42,27 +42,7 @@ namespace resume {
         }
 
     private:
-        void process_children(const XmlNode& node, CTML::Node& parent) {
-            CTML::Node * prev_node = nullptr;
-            for (auto& child : node.children()) {
-                // Add text to section node
-                if (child.type() == pugi::xml_node_type::node_pcdata) {
-                    parent.AppendText(child.text().as_string());
-                }
-
-                // Only process XML tags
-                if (child.type() == pugi::xml_node_type::node_element) {
-                    XmlProcessor processor;
-                    if (this->try_get_rule(child.name(), processor)) {
-                        for (auto& html_node : processor(child)) {
-                            &(parent.AppendChild(html_node, prev_node));
-                        }
-
-                        this->process_children(child, *prev_node);
-                    }
-                }
-            }
-        }
+        void process_children(const XmlNode& node, CTML::Node& parent);
 
         bool try_get_rule(const std::string& name, XmlProcessor& out) {
             if (this->processors.find(name) != this->processors.end()) {
@@ -91,8 +71,14 @@ namespace resume {
 
         std::string generate() {
             this->set_title();
+            this->parse_custom_tags();
             this->parse_sections();
             return this->gen.get_html();
+        }
+
+        // Get the <Resume> node
+        pugi::xml_node resume() {
+            return doc.child("Resume");
         }
 
         void add_rule(const std::string& name, XmlProcessor func) {
@@ -107,13 +93,20 @@ namespace resume {
 
         void set_title() {
             this->gen.set_title(
-                doc.child("Resume").child("Title").text().as_string()
+                resume().child("Title").text().as_string()
             );
+        }
+
+        // Parse user-defined tags
+        void parse_custom_tags() {
+            for (auto section : resume().child("CustomTags")) {
+                std::cout << "Reading custom rule " << section.name() << std::endl;
+            }
         }
 
         // Parse the different sections of the body
         void parse_sections() {
-            for (auto section : doc.child("Resume").child("Body")) {
+            for (auto section : resume().child("Body")) {
                 this->gen.add_section(section);
                 std::cout << "Read section " << section.name() << std::endl;
             }

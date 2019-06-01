@@ -1,5 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Resume>
+  <CustomTags>
+    <School>
+      <Attribute Name="Name"/>
+      <Attribute Name="Years"/>
+      <Attribute Name="Degree"/>
+      <Attribute Name="GPA"/>
+      <Subheading Title="{Name}" Subtitle="{Degree} -- {GPA}">
+      </Subheading>
+    </School>
+  </CustomTags>
   <Body>
     <Education>
       <School

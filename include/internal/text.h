@@ -11,6 +11,8 @@ namespace resume {
 
         for (size_t i = 0; i < str.size(); i++) {
             const char & ch = str[i];
+            
+            // Consecutive sequences of capital letters do not get split
             if (is_capital(ch)) {
                 if (i == 0 || !is_capital(str[i - 1])) {
                     new_str += " ";

@@ -2,6 +2,8 @@ add_executable(resume "")
 target_sources(resume
 	PRIVATE
 		common.h
+		html_generator.cpp
+		html_node.h
 		processor.cpp
 		processor.h
 		resume.cpp
