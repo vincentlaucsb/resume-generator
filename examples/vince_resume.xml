@@ -5,7 +5,8 @@
       <School
         Name="University of California, Santa Barbara"
         Years="2013-2018"
-        Subtitle="BA Mathematics -- 3.3 GPA (Dean's List x1)">
+        Degree="BA Mathematics"
+        GPA="3.3 GPA (Dean's List x1)">
         <List>
           <Item>Computer Science Coursework (upper division): data structures and algorithms, database management systems, teaching computing science</Item>
           <Item>Minor in Statistical Science including graduate data mining and time series analysis</Item>
@@ -21,5 +22,14 @@
         </List>
       </Subheading>
     </Projects>
+    <TechnicalSkills>
+      <List>
+        <Item>**Primary Languages:** C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
+        <Item>Languages: Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
+        <Item>**Frameworks**: React, Ruby on Rails, Django, Windows Presentation Foundation (WPF)</Item>
+        <Item>Software/OS: Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
+        <Item>Data Analysis and Visualization: ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
+      </List>
+    </TechnicalSkills>
   </Body>
 </Resume>
