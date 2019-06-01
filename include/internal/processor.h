@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "xml_node.h"
 
 namespace resume {
     NodeList process_list(const XmlNode& node);

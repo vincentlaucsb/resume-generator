@@ -6,6 +6,7 @@ target_sources(resume
 		processor.h
 		resume.cpp
 		resume.h
+		xml_node.h
 )
 
 target_link_libraries(resume pugixml fmt)

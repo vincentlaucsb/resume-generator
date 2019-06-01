@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <iostream>
 #include <vector>
 
 #include "pugixml.hpp"
@@ -9,7 +10,9 @@
 namespace resume {
     // A list of HTML nodes
     using NodeList = std::vector<CTML::Node>;
-    using XmlNode = pugi::xml_node;
+
+    // Forward declaration
+    class XmlNode;
 
     // A function that takes in an XML node and spits out
     // HTML output

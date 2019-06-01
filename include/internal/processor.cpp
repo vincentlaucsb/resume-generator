@@ -10,17 +10,21 @@ namespace resume {
 
     NodeList process_item(const XmlNode& node) {
         NodeList list;
-        list << CTML::Node("li", node.text().as_string());
+        list << CTML::Node("li");
         return list;
     }
 
     NodeList process_school(const XmlNode& node) {
+        auto name = node.get_optional_attr("Name"),
+            gpa = node.get_optional_attr("GPA"),
+            degree = node.get_optional_attr("Degree");
+
         NodeList list;
         CTML::Node container("div");
         container << add_subheading(
-            node.attribute("Name").as_string(),
-            std::string(node.attribute("Degree").as_string()) + " -- " +
-            node.attribute("GPA").as_string());
+            name.as_string(),
+            std::string(degree.as_string()) + " -- " +
+            gpa.as_string());
         list << container;
         return list;
     }
