@@ -8,6 +8,7 @@
 #include <functional>
 
 #include "processor.h"
+#include "text.h"
 
 namespace resume {
     class H3 : public CTML::Node {
@@ -21,7 +22,7 @@ namespace resume {
 
         void add_section(const XmlNode& section) {
             auto & body = this->document.body();
-            body.AppendChild(CTML::Node("h2", section.name()));
+            body.AppendChild(CTML::Node("h2", split_camel_case(section.name())));
             this->process_children(section, body);
         }
 

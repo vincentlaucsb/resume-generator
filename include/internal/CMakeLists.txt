@@ -6,6 +6,7 @@ target_sources(resume
 		processor.h
 		resume.cpp
 		resume.h
+		text.h
 		xml_node.h
 		xml_node.cpp
 )
