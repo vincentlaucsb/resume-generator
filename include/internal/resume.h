@@ -54,7 +54,7 @@ namespace resume {
                     XmlProcessor processor;
                     if (this->try_get_rule(child.name(), processor)) {
                         for (auto& html_node : processor(child)) {
-                            prev_node = &(parent.AppendChildGetRef(html_node));
+                            &(parent.AppendChild(html_node, prev_node));
                         }
 
                         this->process_children(child, *prev_node);
