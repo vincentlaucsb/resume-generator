@@ -17,3 +17,10 @@ target_include_directories(resume
 		${FMTLIB_DIR}/include
 		${CTML_DIR}/include
 )
+
+# Copy examples into build directory for easier debugging
+add_custom_command(
+	TARGET resume POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${RESUME_ROOT_DIR}/examples $<TARGET_FILE_DIR:resume>
+)
