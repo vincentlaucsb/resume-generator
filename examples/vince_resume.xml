@@ -6,8 +6,9 @@
       <Attribute Name="Years"/>
       <Attribute Name="Degree"/>
       <Attribute Name="GPA"/>
-      <Subheading Title="{Name}" Subtitle="{Degree} -- {GPA}">
-      </Subheading>
+      <Template>
+        <Subheading Title="{Name}" Subtitle="{Degree} -- {GPA}" />
+      </Template>
     </School>
   </CustomTags>
   <Body>
@@ -34,11 +35,11 @@
     </Projects>
     <TechnicalSkills>
       <List>
-        <Item>**Primary Languages:** C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
-        <Item>Languages: Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
-        <Item>**Frameworks**: React, Ruby on Rails, Django, Windows Presentation Foundation (WPF)</Item>
-        <Item>Software/OS: Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
-        <Item>Data Analysis and Visualization: ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
+        <Item Heading="Primary Languages">C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
+        <Item Heading="Languages">Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
+        <Item Heading="Frameworks">React, Ruby on Rails, Django, Windows Presentation Foundation (WPF)</Item>
+        <Item Heading="Software/OS">Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
+        <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
       </List>
     </TechnicalSkills>
   </Body>

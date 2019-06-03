@@ -9,8 +9,17 @@ namespace resume {
     }
 
     NodeList process_item(const XmlNode& node) {
+        auto heading = node.get_optional_attr("Heading");
+
         NodeList list;
-        list << CTML::Node("li");
+        CTML::Node list_item("li");
+
+        if (!heading.empty()) {
+            std::string heading_str = fmt::format("{}: ", heading.as_string());
+            list_item.AppendChild(CTML::Node("b").AppendText(heading_str));
+        }
+
+        list << list_item;
         return list;
     }
 
