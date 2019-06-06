@@ -2,15 +2,25 @@
 <Resume>
   <CustomTags>
     <Header>
-      <div>
-        <h1>Vincent La</h1>
-        <p>
-          <Placeholder Value="Address"></Placeholder>
-        </p>
-      </div>
+      <Optional>
+        <Name>Address</Name>
+        <Name>Email</Name>
+      </Optional>
+      <Required></Required>
+      <Template>
+        <div>
+          <h1>Vincent La</h1>
+          <p>
+            <Placeholder Value="Address"></Placeholder>
+          </p>
+        </div>
+      </Template>
     </Header>
   </CustomTags>
   <Body>
+    <Header
+      Email="vincela9@gmail.com"
+    />
     <Education>
       <School
         Name="University of California, Santa Barbara"

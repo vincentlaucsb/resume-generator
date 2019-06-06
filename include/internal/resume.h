@@ -32,12 +32,16 @@ namespace resume {
             );
         }
 
+        void add_custom_rule(const std::string& section_name, CustomXmlProcessor * proc) {
+            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(proc);
+        }
+
         void add_rule(const std::string& section_name, XmlRule func, std::set<std::string> optional, std::set<std::string> required) {
-            this->processors[section_name] = XmlProcessor(
+            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(new XmlProcessor(
                 func,
                 optional,
                 required
-            );
+            ));
         }
 
         std::string get_html() {
@@ -47,9 +51,9 @@ namespace resume {
     private:
         void process_children(const XmlNode& node, CTML::Node& parent);
 
-        bool try_get_rule(const std::string& name, XmlProcessor& out) {
+        bool try_get_rule(const std::string& name, IXmlProcessor *& out) {
             if (this->processors.find(name) != this->processors.end()) {
-                out = this->processors[name];
+                out = this->processors[name].get();
                 return true;
             }
 
@@ -57,7 +61,7 @@ namespace resume {
             return false;
         }
 
-        std::unordered_map<std::string, XmlProcessor> processors = {};
+        std::unordered_map<std::string, std::unique_ptr<IXmlProcessor>> processors = {};
         CTML::Document document;
     };
 
@@ -105,8 +109,22 @@ namespace resume {
 
         // Parse user-defined tags
         void parse_custom_tags() {
-            for (auto section : resume().child("CustomTags")) {
+            auto custom_tags = resume().child("CustomTags");
+            for (auto section : custom_tags) {
                 std::cout << "Reading custom rule " << section.name() << std::endl;
+                CustomXmlProcessor * custom_rule = new CustomXmlProcessor();
+
+                // Parse optional attributes
+                for (auto option : section.child("Optional")) {
+                    custom_rule->add_optional(option.text().as_string());
+                }
+
+                // TODO: Add required attributes
+
+                // Add template
+                custom_rule->set_html_template(section.child("Template"));
+
+                this->gen.add_custom_rule(section.name(), custom_rule);
             }
         }
 

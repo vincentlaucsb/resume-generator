@@ -11,11 +11,11 @@ namespace resume {
 
             // Only process XML tags
             if (child.type() == pugi::xml_node_type::node_element) {
-                XmlProcessor processor;
+                IXmlProcessor * processor = nullptr;
                 
                 // Look up associated rule for processing this node
                 if (this->try_get_rule(child.name(), processor)) {
-                    for (auto& html_node : processor.process_node(child)) {
+                    for (auto& html_node : processor->process_node(child)) {
                         &(parent.AppendChild(html_node, prev_node));
                     }
 

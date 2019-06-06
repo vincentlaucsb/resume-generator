@@ -5,20 +5,13 @@
 #include "common.h"
 #include "xml_node.h"
 
-#define PROCESSOR(name, optional, required) class name : public XmlProcessor { \
-    public: \
-        name(): XmlProcessor(optional, required) {}; \
-    private: \
-        virtual NodeList generate_html() override; \
-};
-
 namespace resume {
-    class XmlProcessor {
+    class IXmlProcessor {
     public:
-        XmlProcessor() = default;
-        XmlProcessor(XmlRule rule, std::set<std::string> optional = {}, std::set<std::string> required = {}) :
-            html_generator(rule), optional_attrs(optional), required_attrs(required)
-        {};
+        IXmlProcessor& add_optional(std::string option) {
+            this->optional_attrs.emplace(option);
+            return *this;
+        }
 
         NodeList process_node(const XmlNode& node) {
             for (auto& attr : optional_attrs) {
@@ -32,16 +25,93 @@ namespace resume {
                 }
             }
 
-            return this->html_generator(this->attrs);
+            return this->generate_html();
+        }
+
+    protected:
+        std::unordered_map<std::string, std::string> attrs;
+        std::set<std::string> optional_attrs;
+        std::set<std::string> required_attrs;
+
+        virtual NodeList generate_html() = 0;
+    };
+
+    class XmlProcessor: public IXmlProcessor {
+    public:
+        XmlProcessor() = default;
+        XmlProcessor(XmlRule rule, std::set<std::string> optional = {}, std::set<std::string> required = {}) :
+            html_generator(rule), optional_attrs(optional), required_attrs(required)
+        {};
+
+        XmlProcessor& add_optional(std::string option) {
+            this->optional_attrs.emplace(option);
+            return *this;
+        }
+
+        NodeList process_node(const XmlNode& node) {
+            for (auto& attr : optional_attrs) {
+                attrs[attr] = node.get_optional_attr(attr).as_string();
+            }
+
+            for (auto& attr : required_attrs) {
+                attrs[attr] = node.attribute(attr.c_str()).as_string();
+                if (attrs[attr].empty()) {
+                    throw std::runtime_error("Required attribute " + attr + "not found.");
+                }
+            }
+
+            return this->generate_html();
         }
         
     protected:
         std::unordered_map<std::string, std::string> attrs;
 
+        virtual NodeList generate_html() {
+            return this->html_generator(this->attrs);
+        }
+
+        XmlRule html_generator;
+
     private:
         std::set<std::string> optional_attrs;
         std::set<std::string> required_attrs;
-        XmlRule html_generator;
+    };
+
+    class CustomXmlProcessor : public XmlProcessor {
+    public:
+        void set_html_template(const XmlNode& node) {
+            this->html_template = std::make_unique<XmlNode>(node);
+        }
+
+    protected:
+        virtual NodeList generate_html() override {
+            NodeList list;
+            for (auto child : *html_template) {
+                // Treat XML name as HTML tag name
+                list << CTML::Node(child.name());
+                this->process_html(child, list.back());
+            }
+            return list;
+        }
+
+    private:
+        void process_html(const XmlNode& node, CTML::Node& html) {
+            CTML::Node * last_child = nullptr;
+            for (auto child : node.children()) {
+                auto name = child.name();
+                if (name != "Placeholder") {
+                    html.AppendChild(CTML::Node(name), last_child);
+                    this->process_html(child, *last_child);
+                }
+                else {
+                    // Replace placeholder
+                    auto attr_to_get = node.text().as_string();
+                    html.AppendText(this->attrs[attr_to_get]);
+                }
+            }
+        };
+
+        std::unique_ptr<XmlNode> html_template = nullptr;
     };
 
     NodeList process_subheading(Attributes& node);
