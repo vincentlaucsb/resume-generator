@@ -10,7 +10,7 @@ namespace resume {
         for (auto& attr : required_attrs) {
             std::string attr_value = node.attribute(attr.c_str()).as_string();
             if (attr_value.empty()) {
-                throw std::runtime_error("Required attribute " + attr + "not found.");
+                throw std::runtime_error("[Error] Required attribute " + attr + " not found in " + node.name() + ".");
             }
 
             attrs[attr] = attr_value;
@@ -73,6 +73,7 @@ namespace resume {
         CTML::Node container("div");
         container << add_subheading(
             attr["Name"],
+            attr["Years"],
             attr["Degree"] + " -- " +
             attr["GPA"]);
         list << container;
@@ -82,13 +83,19 @@ namespace resume {
     NodeList process_subheading(Attributes& attr) {
         return add_subheading(
             attr["Title"],
+            attr["Right"],
             attr["Subtitle"]);
     }
 
-    NodeList add_subheading(const std::string& title, const std::string& subtitle) {
+    NodeList add_subheading(std::string_view title, std::string_view right_text, std::string_view subtitle) {
         NodeList list;
-        list << CTML::Node("h3", title)
-            << CTML::Node("p", subtitle);
+        CTML::Node _title = CTML::Node("h3", title.data());
+        CTML::Node _right_text = CTML::Node("span", right_text.data());
+        _right_text.SetAttribute("style", "float: right");
+        _title.AppendChild(_right_text);
+
+        list << _title
+            << CTML::Node("p", subtitle.data());
         return list;
     }
 }

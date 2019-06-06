@@ -43,21 +43,6 @@ namespace resume {
             this->optional_attrs.emplace(option);
             return *this;
         }
-
-        NodeList process_node(const XmlNode& node) {
-            for (auto& attr : optional_attrs) {
-                attrs[attr] = node.get_optional_attr(attr).as_string();
-            }
-
-            for (auto& attr : required_attrs) {
-                attrs[attr] = node.attribute(attr.c_str()).as_string();
-                if (attrs[attr].empty()) {
-                    throw std::runtime_error("Required attribute " + attr + "not found.");
-                }
-            }
-
-            return this->generate_html();
-        }
         
     protected:
         virtual NodeList generate_html() {
@@ -97,5 +82,5 @@ namespace resume {
     NodeList process_list(const Attributes& node);
     NodeList process_item(Attributes& node);
 
-    NodeList add_subheading(const std::string& title, const std::string& subtitle);
+    NodeList add_subheading(std::string_view title, std::string_view right_text, std::string_view subtitle);
 }

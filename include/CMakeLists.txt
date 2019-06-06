@@ -9,17 +9,18 @@ add_subdirectory(CTML)
 add_executable(resume "")
 target_sources(resume
 	PRIVATE
-		common.h
-		custom_tag.h
-		html_generator.cpp
-		processor.cpp
-		processor.h
-		resume.cpp
-		resume.h
-		text.h
+        common.h
+        custom_tag.h
+        html_generator.cpp
+        processor.cpp
+        processor.h
+        resume.cpp
+        resume.h
+        resume_parser.cpp
+        text.h
         text.cpp
-		xml_node.h
-		xml_node.cpp
+        xml_node.h
+        xml_node.cpp
 )
 
 target_link_libraries(resume pugixml fmt)
