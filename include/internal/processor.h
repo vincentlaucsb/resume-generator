@@ -8,6 +8,9 @@
 namespace resume {
     class IXmlProcessor {
     public:
+        IXmlProcessor(std::set<std::string> optional = {}, std::set<std::string> required = {}) :
+            optional_attrs(optional), required_attrs(required) {};
+
         IXmlProcessor& add_optional(std::string option) {
             this->optional_attrs.emplace(option);
             return *this;
@@ -40,7 +43,7 @@ namespace resume {
     public:
         XmlProcessor() = default;
         XmlProcessor(XmlRule rule, std::set<std::string> optional = {}, std::set<std::string> required = {}) :
-            html_generator(rule), optional_attrs(optional), required_attrs(required)
+            html_generator(rule), IXmlProcessor(optional, required)
         {};
 
         XmlProcessor& add_optional(std::string option) {
@@ -64,17 +67,11 @@ namespace resume {
         }
         
     protected:
-        std::unordered_map<std::string, std::string> attrs;
-
         virtual NodeList generate_html() {
             return this->html_generator(this->attrs);
         }
 
         XmlRule html_generator;
-
-    private:
-        std::set<std::string> optional_attrs;
-        std::set<std::string> required_attrs;
     };
 
     class CustomXmlProcessor : public XmlProcessor {
@@ -98,16 +95,25 @@ namespace resume {
         void process_html(const XmlNode& node, CTML::Node& html) {
             CTML::Node * last_child = nullptr;
             for (auto child : node.children()) {
-                auto name = child.name();
-                if (name != "Placeholder") {
-                    html.AppendChild(CTML::Node(name), last_child);
-                    this->process_html(child, *last_child);
+                // Add text to section node
+                if (child.type() == pugi::xml_node_type::node_pcdata) {
+                    html.AppendText(child.text().as_string());
                 }
-                else {
-                    // Replace placeholder
-                    auto attr_to_get = node.text().as_string();
-                    html.AppendText(this->attrs[attr_to_get]);
+
+                // Only process XML tags
+                if (child.type() == pugi::xml_node_type::node_element) {
+                    auto name = std::string(child.name());
+                    if (name != "placeholder" && name != "Placeholder") {
+                        html.AppendChild(CTML::Node(name), last_child);
+                        this->process_html(child, *last_child);
+                    }
+                    else {
+                        // Replace placeholder
+                        auto attr_to_get = child.attribute("Value").as_string();
+                        html.AppendText(this->attrs[attr_to_get]);
+                    }
                 }
+                
             }
         };
 

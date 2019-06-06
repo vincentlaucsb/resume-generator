@@ -12,15 +12,18 @@
           <h1>Vincent La</h1>
           <p>
             <Placeholder Value="Address"></Placeholder>
+            <Placeholder Value="Email"></Placeholder>
           </p>
         </div>
       </Template>
     </Header>
   </CustomTags>
   <Body>
-    <Header
-      Email="vincela9@gmail.com"
-    />
+    <Blah>
+      <Header
+        Email="vincela9@gmail.com"
+      />
+    </Blah>
     <Education>
       <School
         Name="University of California, Santa Barbara"
