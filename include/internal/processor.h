@@ -16,6 +16,11 @@ namespace resume {
             return *this;
         }
 
+        IXmlProcessor& add_required(std::string option) {
+            this->required_attrs.emplace(option);
+            return *this;
+        }
+
         NodeList process_node(const XmlNode& node) {
             for (auto& attr : optional_attrs) {
                 attrs[attr] = node.get_optional_attr(attr).as_string();

@@ -17,14 +17,24 @@
         </div>
       </Template>
     </Header>
+    <Section>
+      <Required>
+        <Name>Title</Name>
+      </Required>
+      <Template>
+        <h2>
+          <Placeholder Value="Title"></Placeholder>
+        </h2>
+        <div>
+          <!-- Content of children go here -->
+        </div>
+      </Template>
+    </Section>
   </CustomTags>
-  <Body>
-    <Blah>
-      <Header
-        Email="vincela9@gmail.com"
-      />
-    </Blah>
-    <Education>
+    <Header
+      Email="vincela9@gmail.com"
+    />
+    <Section Title="Education">
       <School
         Name="University of California, Santa Barbara"
         Years="2013-2018"
@@ -35,8 +45,8 @@
           <Item>Minor in Statistical Science including graduate data mining and time series analysis</Item>
         </List>
       </School>
-    </Education>
-    <Projects>
+    </Section>
+    <Section Title="Projects">
       <Subheading Title="CSV Parser" Subtitle="https://github.com/vincentlaucsb/csv-parser -- 96% code coverage">
         <List>
           <Item>A multi-threaded C++11 CSV parser featuring iterators and ability to parse at over 200MB/s</Item>
@@ -44,8 +54,8 @@
           <Item>Utilized continuous integration services to ensure cross-platform, cross-compiler compatibility</Item>
         </List>
       </Subheading>
-    </Projects>
-    <TechnicalSkills>
+    </Section>
+    <Section Title="Technical Skills">
       <List>
         <Item Heading="Primary Languages">C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
         <Item Heading="Languages">Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
@@ -53,6 +63,5 @@
         <Item Heading="Software/OS">Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
         <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
       </List>
-    </TechnicalSkills>
-  </Body>
+    </Section>
 </Resume>

@@ -20,11 +20,12 @@ namespace resume {
     public:
         HtmlGenerator() {};
 
-        void add_section(const XmlNode& section) {
+        void process_resume(XmlNode node) {
             auto & body = this->document.body();
-            body.AppendChild(CTML::Node("h2", split_camel_case(section.name())));
-            this->process_children(section, body);
+            this->process_children(node, body);
         }
+
+        void process_children(const XmlNode& node, CTML::Node& parent);
 
         void set_title(const std::string& text) {
             this->document.AppendNodeToHead(
@@ -49,7 +50,6 @@ namespace resume {
         }
 
     private:
-        void process_children(const XmlNode& node, CTML::Node& parent);
 
         bool try_get_rule(const std::string& name, IXmlProcessor *& out) {
             if (this->processors.find(name) != this->processors.end()) {
@@ -120,20 +120,23 @@ namespace resume {
                 }
 
                 // TODO: Add required attributes
+                for (auto option : section.child("Required")) {
+                    custom_rule->add_required(option.text().as_string());
+                }
 
                 // Add template
                 custom_rule->set_html_template(section.child("Template"));
 
                 this->gen.add_custom_rule(section.name(), custom_rule);
             }
+
+            // Remove tags now that we're done
+            resume().remove_child("CustomTags");
         }
 
         // Parse the different sections of the body
         void parse_sections() {
-            for (auto section : resume().child("Body")) {
-                this->gen.add_section(section);
-                std::cout << "Read section " << section.name() << std::endl;
-            }
+            this->gen.process_resume(resume());
         }
     };
 }
