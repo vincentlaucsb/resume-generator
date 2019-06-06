@@ -14,10 +14,10 @@ int main(int argc, char ** argv)
     std::string filename = argv[1],
         output = argv[2];
     ResumeParser resume(filename);
-    resume.add_rule("School", process_school);
-    resume.add_rule("Subheading", process_subheading);
+    resume.add_rule("School", process_school, { "Name", "GPA", "Degree" });
+    resume.add_rule("Subheading", process_subheading, { "Title", "Subtitle" });
     resume.add_rule("List", process_list);
-    resume.add_rule("Item", process_item);
+    resume.add_rule("Item", process_item, { "Heading" });
 
     if (!resume.ok()) {
         std::cout << "Couldn't load " << filename << std::endl;

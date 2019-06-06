@@ -32,10 +32,13 @@ namespace resume {
             );
         }
 
-        void add_rule(const std::string& section_name, XmlProcessor func) {
-            this->processors[section_name] = func;
+        void add_rule(const std::string& section_name, XmlRule func, std::set<std::string> optional, std::set<std::string> required) {
+            this->processors[section_name] = XmlProcessor(
+                func,
+                optional,
+                required
+            );
         }
-
 
         std::string get_html() {
             return this->document.ToString();
@@ -81,8 +84,11 @@ namespace resume {
             return doc.child("Resume");
         }
 
-        void add_rule(const std::string& name, XmlProcessor func) {
-            this->gen.add_rule(name, func);
+        void add_rule(const std::string& section_name,
+            XmlRule func,
+            std::set<std::string> optional = {},
+            std::set<std::string> required = {}) {
+            this->gen.add_rule(section_name, func, optional, required);
         }
 
     private:

@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 
 #include "pugixml.hpp"
@@ -14,9 +15,11 @@ namespace resume {
     // Forward declaration
     class XmlNode;
 
-    // A function that takes in an XML node and spits out
+    using Attributes = std::unordered_map<std::string, std::string>;
+
+    // A function that takes in resume attributes and spits out
     // HTML output
-    using XmlProcessor = std::function<NodeList(XmlNode)>;
+    using XmlRule = std::function<NodeList(Attributes)>;
 
     inline NodeList& operator<<(NodeList& nodes, const CTML::Node& node) {
         nodes.push_back(node);

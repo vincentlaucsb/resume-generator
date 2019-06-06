@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Resume>
   <CustomTags>
-    <School>
-      <Attribute Name="Name"/>
-      <Attribute Name="Years"/>
-      <Attribute Name="Degree"/>
-      <Attribute Name="GPA"/>
-      <Template>
-        <Subheading Title="{Name}" Subtitle="{Degree} -- {GPA}" />
-      </Template>
-    </School>
+    <Header>
+      <div>
+        <h1>Vincent La</h1>
+        <p>
+          <Placeholder Value="Address"></Placeholder>
+        </p>
+      </div>
+    </Header>
   </CustomTags>
   <Body>
     <Education>
