@@ -1,9 +1,13 @@
 #pragma once
+#include <string>
+#include <string_view>
+
 // Contains text processing functions
 namespace resume {
-    inline bool is_capital(char ch) {
-        return ch >= 'A' && ch <= 'Z';
-    }
+    bool is_capital(char ch);
+
+    // Return lowercase version of a string
+    std::string lower(std::string_view);
 
     // Turn "CamelCase" into "Camel Case"
     inline std::string split_camel_case(const std::string& str) {

@@ -11,30 +11,18 @@ namespace resume {
         IXmlProcessor(std::set<std::string> optional = {}, std::set<std::string> required = {}) :
             optional_attrs(optional), required_attrs(required) {};
 
-        IXmlProcessor& add_optional(std::string option) {
+        IXmlProcessor& add_optional(std::string_view option) {
             this->optional_attrs.emplace(option);
             return *this;
         }
 
-        IXmlProcessor& add_required(std::string option) {
+        IXmlProcessor& add_required(std::string_view option) {
             this->required_attrs.emplace(option);
             return *this;
         }
 
-        NodeList process_node(const XmlNode& node) {
-            for (auto& attr : optional_attrs) {
-                attrs[attr] = node.get_optional_attr(attr).as_string();
-            }
-
-            for (auto& attr : required_attrs) {
-                attrs[attr] = node.attribute(attr.c_str()).as_string();
-                if (attrs[attr].empty()) {
-                    throw std::runtime_error("Required attribute " + attr + "not found.");
-                }
-            }
-
-            return this->generate_html();
-        }
+        // Grab the attributes from a node
+        NodeList process_node(const XmlNode& node);
 
     protected:
         std::unordered_map<std::string, std::string> attrs;
@@ -97,32 +85,11 @@ namespace resume {
         }
 
     private:
-        void process_html(const XmlNode& node, CTML::Node& html) {
-            CTML::Node * last_child = nullptr;
-            for (auto child : node.children()) {
-                // Add text to section node
-                if (child.type() == pugi::xml_node_type::node_pcdata) {
-                    html.AppendText(child.text().as_string());
-                }
-
-                // Only process XML tags
-                if (child.type() == pugi::xml_node_type::node_element) {
-                    auto name = std::string(child.name());
-                    if (name != "placeholder" && name != "Placeholder") {
-                        html.AppendChild(CTML::Node(name), last_child);
-                        this->process_html(child, *last_child);
-                    }
-                    else {
-                        // Replace placeholder
-                        auto attr_to_get = child.attribute("Value").as_string();
-                        html.AppendText(this->attrs[attr_to_get]);
-                    }
-                }
-                
-            }
-        };
-
+        // XML describing HTML output
         std::unique_ptr<XmlNode> html_template = nullptr;
+
+        // Recursive callback for generate_html()
+        void process_html(const XmlNode& node, CTML::Node& html);
     };
 
     NodeList process_subheading(Attributes& node);
