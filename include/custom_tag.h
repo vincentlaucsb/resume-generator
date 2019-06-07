@@ -10,7 +10,6 @@ namespace resume {
     class CustomTag {
         using AttributeValues = std::unordered_map<std::string, std::string>;
 
-
         // Convert custom  tag to an XML node that we recognize
         XmlNode generate(const AttributeValues& vals) {
             return this->generate(this->xml_template, vals);

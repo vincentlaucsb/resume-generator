@@ -16,58 +16,6 @@ namespace resume {
         H3() : CTML::Node("h3") {}
     };
 
-    class HtmlGenerator {
-    public:
-        HtmlGenerator() {
-        };
-
-        void process_resume(XmlNode node) {
-            auto & body = this->document.body();
-            this->process_children(node, body);
-        }
-
-        void set_title(const std::string& text) {
-            this->document.AppendNodeToHead(
-                CTML::Node("title", text)
-            );
-        }
-
-        void add_custom_rule(const std::string& section_name, CustomXmlProcessor * proc) {
-            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(proc);
-        }
-
-        void add_rule(const std::string& section_name, XmlRule func, std::set<std::string> optional, std::set<std::string> required) {
-            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(new XmlProcessor(
-                func,
-                optional,
-                required
-            ));
-        }
-
-        std::string get_html() {
-            return this->document.ToString();
-        }
-
-        CTML::Document document;
-    private:
-
-
-        // Recursively process XML nodes and create HTML
-        void process_children(const XmlNode& node, CTML::Node& parent);
-
-        bool try_get_rule(const std::string& name, IXmlProcessor *& out) {
-            if (this->processors.find(name) != this->processors.end()) {
-                out = this->processors[name].get();
-                return true;
-            }
-
-            std::cout << "[Warning] No rule found for section " << name << "... skipping" << std::endl;
-            return false;
-        }
-
-        std::unordered_map<std::string, std::unique_ptr<IXmlProcessor>> processors = {};
-    };
-
     class ResumeParser {
     public:
         ResumeParser(const std::string& file) {
@@ -80,11 +28,11 @@ namespace resume {
         }
 
         std::string generate() {
-            this->set_title();
+            this->set_title(resume().attribute("Title").as_string());
             this->parse_stylesheets();
             this->parse_custom_tags();
-            this->parse_sections();
-            return this->gen.get_html();
+            this->process_resume(resume());
+            return this->get_html();
         }
 
         // Get the <Resume> node
@@ -92,45 +40,62 @@ namespace resume {
             return doc.child("Resume");
         }
 
-        void add_rule(const std::string& section_name,
-            XmlRule func,
-            std::set<std::string> optional = {},
-            std::set<std::string> required = {}) {
-            this->gen.add_rule(section_name, func, optional, required);
+        void process_resume(XmlNode node) {
+            auto & body = this->html_document.body();
+            this->process_children(node, body);
         }
 
-    private:
-        // The parsed resume
-        HtmlGenerator gen;
-        pugi::xml_document doc;
-        pugi::xml_parse_result result;
-
-        void set_title() {
-            this->gen.set_title(
-                resume().child("Title").text().as_string()
+        void set_title(const std::string& text) {
+            this->html_document.AppendNodeToHead(
+                CTML::Node("title", text)
             );
         }
 
-        void parse_stylesheets() {
-            for (auto style : this->resume().children("Stylesheet")) {
-                this->gen.document.AppendNodeToHead(
-                    CTML::Node("link")
-                    .SetAttribute("rel", "stylesheet")
-                    .SetAttribute("type", "text/css")
-                    .SetAttribute("href", style.text().as_string())
-                );
-            }
-
-            this->resume().remove_child("Stylesheet");
-            this->resume().remove_child("Stylesheet");
+        void add_custom_rule(const std::string& section_name, CustomXmlProcessor * proc) {
+            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(proc);
         }
+
+        void add_rule(const std::string& section_name, XmlRule func, std::set<std::string> optional = {}, std::set<std::string> required = {}) {
+            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(new XmlProcessor(
+                func,
+                optional,
+                required
+            ));
+        }
+
+        std::string get_html() {
+            return this->html_document.ToString();
+        }
+
+    private:
+        // Tags to ignore while generating HTML
+        static const std::set<std::string> ignore;
+        pugi::xml_document doc;
+        CTML::Document html_document;
+        pugi::xml_parse_result result;
+
+        void set_title();
+
+        // Parse stylesheets
+        void parse_stylesheets();
 
         // Parse user-defined tags
         void parse_custom_tags();
 
-        // Parse the different sections of the body
-        void parse_sections() {
-            this->gen.process_resume(resume());
+        // Recursively process XML nodes and create HTML
+        void process_children(const XmlNode& node, CTML::Node& parent);
+
+        // Try to get a rule or print out a warning message
+        bool try_get_rule(const std::string& name, IXmlProcessor *& out) {
+            if (this->processors.find(name) != this->processors.end()) {
+                out = this->processors[name].get();
+                return true;
+            }
+
+            std::cout << "[Warning] No rule found for section " << name << "... skipping" << std::endl;
+            return false;
         }
+
+        std::unordered_map<std::string, std::unique_ptr<IXmlProcessor>> processors = {};
     };
 }

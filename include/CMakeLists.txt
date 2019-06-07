@@ -11,7 +11,6 @@ target_sources(resume
 	PRIVATE
         common.h
         custom_tag.h
-        html_generator.cpp
         processor.cpp
         processor.h
         resume.cpp

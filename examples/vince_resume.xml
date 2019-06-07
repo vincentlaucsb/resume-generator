@@ -1,5 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Resume>
+<?xml version="1.0" encoding="utf-8"?>
+<Resume Title="Vincent La's Resume">
+  <Stylesheet>resume.css</Stylesheet>
+  <Stylesheet>https://fonts.googleapis.com/css?family=Montserrat:400,500,700</Stylesheet>
   <CustomTags>
     <Header>
       <Optional>
@@ -10,12 +12,20 @@
       </Optional>
       <Template>
         <header>
-          <h1>Vincent La</h1>
+          <h1 id="name">Vincent La</h1>
           <p>
-            <Placeholder Value="Address"></Placeholder>
-            <Placeholder Value="Email"></Placeholder>
+            <span>
+              <Placeholder Value="Address"></Placeholder>
+            </span>
+            <span>
+              <Placeholder Value="Email"></Placeholder>
+            </span>
+            <span>
             <Placeholder Value="LinkedIn"></Placeholder>
+            </span>
+            <span>
             <Placeholder Value="Website"></Placeholder>
+            </span>
           </p>
         </header>
       </Template>
@@ -30,9 +40,7 @@
           <h2>
             <Placeholder Value="Title"></Placeholder>
           </h2>
-          <div>
-            <!-- Content of children go here -->
-          </div>
+          <!-- Content of children go here -->
         </section>
       </Template>
     </Section>
@@ -55,19 +63,32 @@
     </School>
   </Section>
   <Section Title="Projects">
-    <Subheading Title="CSV Parser" Subtitle="https://github.com/vincentlaucsb/csv-parser -- 96% code coverage">
+    <Subsection
+      Title="CSV Parser"
+      Subtitle="https://github.com/vincentlaucsb/csv-parser -- 96% code coverage"
+      Right="C++, CMake, gcov, Valgrind"  
+    >
       <List>
         <Item>A multi-threaded C++11 CSV parser featuring iterators and ability to parse at over 200MB/s</Item>
         <Item>Was solely responsible for all aspects of software development from design to implementation and testing</Item>
         <Item>Utilized continuous integration services to ensure cross-platform, cross-compiler compatibility</Item>
       </List>
-    </Subheading>
+    </Subsection>
+    <Subsection
+      Title="Resume Generator"
+      Subtitle="https://github.com/vincentlaucsb/resume-generator"
+      Right="C++17, HTML/CSS, XML, CMake"
+    >
+      <List>
+        <Item>A sexy resume generator</Item>
+      </List>
+    </Subsection>
   </Section>
   <Section Title="Technical Skills">
     <List>
       <Item Heading="Primary Languages">C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
-      <Item Heading="Languages">Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
-      <Item Heading="Frameworks">React, Ruby on Rails, Django, Windows Presentation Foundation (WPF)</Item>
+      <Item Heading="Secondary Languages">Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
+      <Item Heading="Frameworks">React, Ruby on Rails, Django, Boost, Windows Presentation Foundation (WPF)</Item>
       <Item Heading="Software/OS">Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
       <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
     </List>
