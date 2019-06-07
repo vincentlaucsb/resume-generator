@@ -42,3 +42,10 @@ add_custom_command(
 	TARGET resume POST_BUILD
 	COMMAND ${copy_examples}
 )
+
+install(
+    TARGETS resume
+    RUNTIME
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+)

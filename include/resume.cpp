@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
     try {
         ResumeParser resume(filename);
         resume.add_rule("School", process_school, { "Name", "Years", "GPA", "Degree" });
-        resume.add_rule("Subheading", process_subheading, { "Title", "Subtitle" });
+        resume.add_rule("Subheading", process_subheading, { "Title", "Subtitle", "Right" });
         resume.add_rule("List", process_list);
         resume.add_rule("Item", process_item, { "Heading" });
 
