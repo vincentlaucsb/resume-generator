@@ -19,6 +19,7 @@ namespace resume {
         // Perform text processings
         for (auto& [attr, value] : this->attrs) {
             dashify(value);
+            url(value);
         }
 
         return this->generate_html();
