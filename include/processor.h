@@ -77,10 +77,10 @@ namespace resume {
         void process_html(const XmlNode& node, CTML::Node& html);
     };
 
-    NodeList process_subheading(Attributes& node);
+    NodeList process_subsection(Attributes& node);
     NodeList process_school(Attributes& attr);
     NodeList process_list(const Attributes& node);
     NodeList process_item(Attributes& node);
 
-    NodeList add_subheading(std::string_view title, std::string_view right_text, std::string_view subtitle);
+    NodeList add_subsection(std::string_view title, std::string_view right_text, std::string_view subtitle);
 }

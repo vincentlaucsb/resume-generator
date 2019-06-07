@@ -1,0 +1,106 @@
+body {
+    font-family: Georgia, serif;
+    font-size: 9.5pt;
+    max-width: 45em;
+    line-height: 1.4;
+    margin: 1em auto 10% auto;
+    background-color: #fefefe;
+}
+
+/* Start with having everything have zero margins
+ * Then add more as appropriate
+ */
+body * {
+    margin: 0;
+}
+
+body, a {
+    color: #1d1d1d;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3, header {
+    font-family: Montserrat, sans-serif;
+}
+
+h2, h3, h4 {
+    font-weight: 500;
+}
+
+h2 {
+    border-bottom: 1px solid #ebe9e9;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3px;
+}
+
+h1#name {
+    font-size: 3em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+/* Job/School Titles */
+p.subtitle {
+    margin-top: 0;
+    font-style: italic;
+}
+
+h2 > span, h3 > span {
+    text-transform: none;
+    font-weight: normal;
+    float: right;
+}
+
+h2 > span {
+    font-size: 70%;
+}
+
+h3 > span {
+    font-size: 90%;
+}
+
+/* Header: Name and Contact Info */
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1em;
+    flex-wrap: wrap;
+}
+
+header p {
+    display: block;
+    width: 50%;
+    text-align: right;
+    font-size: 95%;
+}
+
+header p span {
+    display: inline-block;
+    margin-right: 1em;
+}
+/* End Header */
+
+section { 
+    margin-bottom: 1em;
+}
+
+section div.subsection + div.subsection {
+    margin-top: 0.5em;
+}
+
+ul {
+    padding-left: 1em;
+}
+
+li {
+    list-style-position: outside;
+}

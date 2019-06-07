@@ -18,7 +18,8 @@ namespace resume {
 
     class HtmlGenerator {
     public:
-        HtmlGenerator() {};
+        HtmlGenerator() {
+        };
 
         void process_resume(XmlNode node) {
             auto & body = this->document.body();
@@ -47,7 +48,10 @@ namespace resume {
             return this->document.ToString();
         }
 
+        CTML::Document document;
     private:
+
+
         // Recursively process XML nodes and create HTML
         void process_children(const XmlNode& node, CTML::Node& parent);
 
@@ -62,7 +66,6 @@ namespace resume {
         }
 
         std::unordered_map<std::string, std::unique_ptr<IXmlProcessor>> processors = {};
-        CTML::Document document;
     };
 
     class ResumeParser {
@@ -78,6 +81,7 @@ namespace resume {
 
         std::string generate() {
             this->set_title();
+            this->parse_stylesheets();
             this->parse_custom_tags();
             this->parse_sections();
             return this->gen.get_html();
@@ -105,6 +109,20 @@ namespace resume {
             this->gen.set_title(
                 resume().child("Title").text().as_string()
             );
+        }
+
+        void parse_stylesheets() {
+            for (auto style : this->resume().children("Stylesheet")) {
+                this->gen.document.AppendNodeToHead(
+                    CTML::Node("link")
+                    .SetAttribute("rel", "stylesheet")
+                    .SetAttribute("type", "text/css")
+                    .SetAttribute("href", style.text().as_string())
+                );
+            }
+
+            this->resume().remove_child("Stylesheet");
+            this->resume().remove_child("Stylesheet");
         }
 
         // Parse user-defined tags

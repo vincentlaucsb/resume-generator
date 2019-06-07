@@ -37,7 +37,13 @@ namespace resume {
             if (child.type() == pugi::xml_node_type::node_element) {
                 auto name = lower(child.name());
                 if (name != "placeholder") {
-                    html.AppendChild(CTML::Node(name), last_child);
+                    // Regular HTML node
+                    CTML::Node html_node(name);
+                    for (auto attr : child.attributes()) {
+                        html_node.SetAttribute(attr.name(), attr.value());
+                    }
+
+                    html.AppendChild(html_node, last_child);
                     this->process_html(child, *last_child);
                 }
                 else {
@@ -77,7 +83,7 @@ namespace resume {
     NodeList process_school(Attributes& attr) {
         NodeList list;
         CTML::Node container("div");
-        container << add_subheading(
+        container << add_subsection(
             attr["Name"],
             attr["Years"],
             attr["Degree"] + " &ndash; " +
@@ -86,22 +92,27 @@ namespace resume {
         return list;
     }
 
-    NodeList process_subheading(Attributes& attr) {
-        return add_subheading(
+    NodeList process_subsection(Attributes& attr) {
+        return add_subsection(
             attr["Title"],
             attr["Right"],
             attr["Subtitle"]);
     }
 
-    NodeList add_subheading(std::string_view title, std::string_view right_text, std::string_view subtitle) {
+    NodeList add_subsection(std::string_view title, std::string_view right_text, std::string_view subtitle) {
         NodeList list;
         CTML::Node _title = CTML::Node("h3", title.data());
         CTML::Node _right_text = CTML::Node("span", right_text.data());
         _right_text.SetAttribute("style", "float: right");
         _title.AppendChild(_right_text);
 
-        list << _title
-            << CTML::Node("p", subtitle.data());
+        list << CTML::Node("div")
+            .SetAttribute("class", "subsection")
+            .AppendChild(_title)
+            .AppendChild(
+                CTML::Node("p", subtitle.data())
+                .SetAttribute("class", "subtitle")
+            );
         return list;
     }
 }

@@ -25,12 +25,15 @@
         <Name>Title</Name>
       </Required>
       <Template>
-        <h2>
-          <Placeholder Value="Title"></Placeholder>
-        </h2>
-        <div>
-          <!-- Content of children go here -->
-        </div>
+        <!-- TODO: Unmangle our <section> tag from html <section> tag -->
+        <section>
+          <h2>
+            <Placeholder Value="Title"></Placeholder>
+          </h2>
+          <div>
+            <!-- Content of children go here -->
+          </div>
+        </section>
       </Template>
     </Section>
   </CustomTags>
