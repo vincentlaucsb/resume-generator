@@ -28,4 +28,9 @@ namespace resume {
 
         return new_str;
     }
+
+    std::string& replace(std::string& str, std::string_view substr, std::string_view replace);
+
+    // Converts -- to &mdash;
+    void dashify(std::string& str);
 }

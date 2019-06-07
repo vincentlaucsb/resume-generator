@@ -1,3 +1,4 @@
+#include <regex>
 #include "text.h"
 
 namespace resume {
@@ -12,5 +13,18 @@ namespace resume {
         }
 
         return ret;
+    }
+
+    std::string& replace(std::string& str, std::string_view substr, std::string_view replace) {
+        while (str.find(substr) != str.npos) {
+            str.replace(str.find(substr), substr.size(), replace);
+        }
+
+        return str;
+    }
+
+    // Converts -- to &mdash;
+    void dashify(std::string& str) {
+        replace(str, "--", "&ndash;");
     }
 }

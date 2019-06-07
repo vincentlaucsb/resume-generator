@@ -16,6 +16,11 @@ namespace resume {
             attrs[attr] = attr_value;
         }
 
+        // Perform text processings
+        for (auto& [attr, value] : this->attrs) {
+            dashify(value);
+        }
+
         return this->generate_html();
     }
 
@@ -74,7 +79,7 @@ namespace resume {
         container << add_subheading(
             attr["Name"],
             attr["Years"],
-            attr["Degree"] + " -- " +
+            attr["Degree"] + " &ndash; " +
             attr["GPA"]);
         list << container;
         return list;
