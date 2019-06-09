@@ -18,12 +18,6 @@ namespace resume {
             attrs[attr] = attr_value;
         }
 
-        // Perform text processings
-        for (auto& [attr, value] : attrs) {
-            dashify(value);
-            url(value);
-        }
-
         return attrs;
     }
 

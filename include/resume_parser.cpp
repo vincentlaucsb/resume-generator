@@ -21,6 +21,9 @@ namespace resume {
             std::cout << "Reading custom rule " << section.name() << std::endl;
             this->add_custom_rule(section.name(), CustomXmlProcessor(section));
         }
+
+        // Remove once we're done
+        resume().remove_child("CustomTags");
     }
 
     bool ResumeParser::try_get_rule(const std::string& name, XmlProcessor& out)
@@ -34,8 +37,6 @@ namespace resume {
     }
 
     void ResumeParser::process_custom_tags(XmlNode node) {
-        // Look up custom rules
-
         // Iteration 1: Substitute custom tags
         for (auto child : node.children()) {
             this->process_custom_tags(child, node);
@@ -56,9 +57,7 @@ namespace resume {
                 current.parent().remove_child(current);
             }
         }
-
-        this->doc.print(std::cout);
-        }
+    }
 
     void ResumeParser::process_custom_tags(XmlNode& node, XmlNode& parent_node) {
         if (this->ignore.find(node.name()) == this->ignore.end()) {
@@ -78,14 +77,21 @@ namespace resume {
                     node                       // Insert new node before current node
                 );
 
+                // Copy attributes
+                for (auto attr : temp.first_child().attributes()) {
+                    new_node.append_attribute(attr.name());
+                    new_node.attribute(attr.name()).set_value(attr.value());
+                }
+
+                // Copy children of replacement node
                 for (auto child : temp.first_child()) {
                     new_node.append_copy(child);
                 }
             }
-        }
 
-        for (auto child : node.children()) {
-            this->process_custom_tags(child, node);
+            for (auto child : new_node.children()) {
+                this->process_custom_tags(child, new_node);
+            }
         }
     }
 

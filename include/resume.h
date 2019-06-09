@@ -38,6 +38,7 @@ namespace resume {
             this->parse_stylesheets();
             this->parse_custom_tags();
             this->process_custom_tags(resume());
+            this->process_text(resume());
             this->process_resume(resume());
             return this->get_html();
         }
@@ -88,6 +89,30 @@ namespace resume {
         pugi::xml_parse_result result;
 
         void set_title();
+
+        void process_text(XmlNode node) {
+            class my_walker: public pugi::xml_tree_walker
+            {
+            public:
+                virtual bool begin(pugi::xml_node& node) override { return true;  }
+                virtual bool end(pugi::xml_node& node) override { return true; }
+
+                virtual bool for_each(pugi::xml_node& node) override {
+                    // Perform text processings
+                    for (auto& attr: node.attributes()) {
+                        std::string attr_value = attr.value();
+                        dashify(attr_value);
+                        url(attr_value);
+                        attr.set_value(attr_value.c_str());
+                    }
+
+                    return true;
+                };
+            };
+
+            my_walker walker;
+            node.traverse(walker);
+        }
 
         // Parse stylesheets
         void parse_stylesheets();
