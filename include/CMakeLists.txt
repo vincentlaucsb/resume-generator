@@ -12,7 +12,6 @@ add_library(resume_lib "")
 target_sources(resume_lib
     PRIVATE
         common.h
-        custom_tag.h
         processor.cpp
         processor.h
         resume.h

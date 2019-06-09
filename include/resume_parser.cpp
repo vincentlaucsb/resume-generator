@@ -35,12 +35,30 @@ namespace resume {
 
     void ResumeParser::process_custom_tags(XmlNode node) {
         // Look up custom rules
+
+        // Iteration 1: Substitute custom tags
         for (auto child : node.children()) {
             this->process_custom_tags(child, node);
         }
 
+        // Iteration 2: Remove custom tags
+        std::deque<XmlNode> search_queue = { node };
+        while (!search_queue.empty()) {
+            auto current = search_queue.front();
+            search_queue.pop_front();
+
+            if (this->custom_processors.find(current.name()) == this->custom_processors.end()) {
+                for (auto child : current) {
+                    search_queue.push_front(child);
+                }
+            }
+            else {
+                current.parent().remove_child(current);
+            }
+        }
+
         this->doc.print(std::cout);
-    }
+        }
 
     void ResumeParser::process_custom_tags(XmlNode& node, XmlNode& parent_node) {
         if (this->ignore.find(node.name()) == this->ignore.end()) {
@@ -50,17 +68,24 @@ namespace resume {
                 pugi::xml_document temp;
                 temp.load_string(repl_node_str.c_str());
 
+                // Copy children of node we're replacing
+                for (auto child : node) {
+                    temp.first_child().append_copy(child);
+                }
+
                 new_node = parent_node.insert_child_before(
                     temp.first_child().name(), // Give the new node a name
-                    node                     // Insert new node before current node
+                    node                       // Insert new node before current node
                 );
-                new_node.append_copy(temp.first_child());
-                parent_node.remove_child(node);
-            }
 
-            for (auto child : new_node.children()) {
-                this->process_custom_tags(child, node);
+                for (auto child : temp.first_child()) {
+                    new_node.append_copy(child);
+                }
             }
+        }
+
+        for (auto child : node.children()) {
+            this->process_custom_tags(child, node);
         }
     }
 

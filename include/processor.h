@@ -5,6 +5,7 @@
 #include "common.h"
 
 namespace resume {
+
     class ResumeParser;
 
     class IXmlProcessor {

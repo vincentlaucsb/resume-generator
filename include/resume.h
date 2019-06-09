@@ -95,7 +95,7 @@ namespace resume {
         // Parse user-defined tags
         void parse_custom_tags();
 
-        void process_custom_tags(XmlNode& node, XmlNode& parent_node);
+        void process_custom_tags(XmlNode& node, XmlNode& parent);
 
         // Recursively process XML nodes and create HTML
         void process_children(XmlNode& node, CTML::Node& parent);
