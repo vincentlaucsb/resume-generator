@@ -21,6 +21,17 @@ namespace resume {
     // HTML output
     using XmlRule = std::function<NodeList(Attributes)>;
 
+    // Allows saving XML documents to strings
+    struct xml_string_writer : pugi::xml_writer
+    {
+        std::string result;
+
+        virtual void write(const void* data, size_t size)
+        {
+            result.append(static_cast<const char*>(data), size);
+        }
+    };
+
     inline NodeList& operator<<(NodeList& nodes, const CTML::Node& node) {
         nodes.push_back(node);
         return nodes;

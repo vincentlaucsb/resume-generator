@@ -5,6 +5,7 @@ target_sources(resume_test
     catch.hpp
     main.cpp
     test_text.cpp
+    test_custom_xml_processor.cpp
 )
 target_link_libraries(resume_test resume_lib)
 target_include_directories(resume_test PRIVATE ${RESUME_ROOT_DIR}/include)

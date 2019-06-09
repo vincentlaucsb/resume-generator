@@ -91,7 +91,7 @@
   <Section Title="Technical Skills">
     <List>
       <Item Heading="Primary Languages">C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
-      <Item Heading="Secondary Languages">Ruby, R, **CSS/SASS (e.g. this resume)**, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
+      <Item Heading="Secondary Languages">Ruby, R, <b>CSS/SASS (e.g. this resume)</b>, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
       <Item Heading="Frameworks">React, Ruby on Rails, Django, Boost, Windows Presentation Foundation (WPF)</Item>
       <Item Heading="Software/OS">Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
       <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>

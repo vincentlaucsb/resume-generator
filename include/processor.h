@@ -24,13 +24,11 @@ namespace resume {
         }
 
         // Grab the attributes from a node
-        NodeList process_node(const XmlNode& node);
+        Attributes get_attributes(const XmlNode& node);
 
     protected:
         std::set<std::string> optional_attrs;
         std::set<std::string> required_attrs;
-
-        virtual NodeList generate_html(Attributes& attrs) = 0;
     };
 
     class XmlProcessor: public IXmlProcessor {
@@ -45,41 +43,35 @@ namespace resume {
             return *this;
         }
         
-    protected:
-        virtual NodeList generate_html(Attributes& attrs) {
-            return this->html_generator(attrs);
+        NodeList generate_html(const XmlNode& node) {
+            return this->html_generator(this->get_attributes(node));
         }
 
+    protected:
         XmlRule html_generator;
     };
 
-    class CustomXmlProcessor : public XmlProcessor {
+    class CustomXmlProcessor : public IXmlProcessor {
     public:
-        CustomXmlProcessor(ResumeParser * parser) : parent(parser) {};
+        CustomXmlProcessor() = default;
+        CustomXmlProcessor(const XmlNode& node);
 
-        void set_html_template(const XmlNode& node) {
-            this->html_template = std::make_unique<XmlNode>(node);
+        void set_xml_template(const XmlNode& node) {
+            xml_string_writer writer;
+            node.print(writer);
+            this->xml_template = writer.result;
         }
+
+        pugi::xml_node generate_xml(XmlNode& custom_node);
 
     protected:
-        virtual NodeList generate_html(Attributes& attrs) override {
-            NodeList list;
-            for (auto child : *html_template) {
-                // Treat XML name as HTML tag name
-                list << CTML::Node(child.name());
-                this->process_html(attrs, child, list.back());
-            }
-            return list;
-        }
+        // Given attributes, fill in the XML template with said attribute values
+        // and convert the template to an XmlNode object
+        pugi::xml_node generate_xml(Attributes& attrs);
 
     private:
-        ResumeParser * parent = nullptr;
-
-        // XML describing HTML output
-        std::unique_ptr<XmlNode> html_template = nullptr;
-
-        // Recursive callback for generate_html()
-        void process_html(Attributes& attrs, const XmlNode& node, CTML::Node& html);
+        // String template which consists of XML nodes that ResumeParser understands
+        std::string xml_template;
     };
 
     NodeList process_subsection(Attributes& node);

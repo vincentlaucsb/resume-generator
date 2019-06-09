@@ -2,7 +2,7 @@
 #include "text.h"
 
 namespace resume {
-    NodeList IXmlProcessor::process_node(const XmlNode& node) {
+    Attributes IXmlProcessor::get_attributes(const XmlNode& node) {
         Attributes attrs;
 
         for (auto& attr : optional_attrs) {
@@ -24,43 +24,46 @@ namespace resume {
             url(value);
         }
 
-        return this->generate_html(attrs);
+        return attrs;
     }
 
-    void CustomXmlProcessor::process_html(Attributes& attrs, const XmlNode& node, CTML::Node& html) {
-        CTML::Node * last_child = nullptr;
-        for (auto child : node.children()) {
-            // Add text to section node
-            if (child.type() == pugi::xml_node_type::node_pcdata) {
-                html.AppendText(child.text().as_string());
-            }
-
-            // Only process XML tags
-            if (child.type() == pugi::xml_node_type::node_element) {
-                auto name = lower(child.name());
-
-                if (name != "placeholder") {
-                    // Regular HTML node
-                    CTML::Node html_node(name);
-
-                    // Copy attributes
-                    for (auto attr : child.attributes()) {
-                        html_node.SetAttribute(attr.name(), attr.value());
-                    }
-
-                    html.AppendChild(html_node, last_child);
-                    this->process_html(attrs, child, *last_child);
-                }
-                else {
-                    // Replace placeholder
-                    auto attr_to_get = child.attribute("Value").as_string();
-                    html.AppendText(attrs[attr_to_get]);
-                }
-
-                // TODO: Allow users to reference other defined tags
-            }
-
+    CustomXmlProcessor::CustomXmlProcessor(const XmlNode& node) {
+        // Parse optional attributes
+        for (auto option : split<';'>(node.attribute("Optional").as_string())) {
+            add_optional(option);
         }
+
+        for (auto option : node.child("Optional")) {
+            add_optional(option.text().as_string());
+        }
+
+        // Parse required attributes
+        for (auto option : split<';'>(node.attribute("Required").as_string())) {
+            add_optional(option);
+        }
+
+        for (auto option : node.child("Required")) {
+            add_required(option.text().as_string());
+        }
+
+        // Add template
+        // TODO: Throw error if not found
+        set_xml_template(node.child("Template"));
+    }
+
+    pugi::xml_node CustomXmlProcessor::generate_xml(XmlNode & custom_node)
+    {
+        return this->generate_xml(this->get_attributes(custom_node));
+    }
+
+    pugi::xml_node CustomXmlProcessor::generate_xml(Attributes& attrs) {
+        std::string ret = resume::format(this->xml_template, attrs);
+        
+        // Construct XML from string
+        pugi::xml_document doc;
+        doc.load_string(ret.c_str());
+
+        return doc.child("Template");
     }
 
     NodeList process_list(const Attributes& node) {

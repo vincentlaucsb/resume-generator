@@ -19,33 +19,22 @@ namespace resume {
         auto custom_tags = resume().child("CustomTags");
         for (auto section : custom_tags) {
             std::cout << "Reading custom rule " << section.name() << std::endl;
-            CustomXmlProcessor * custom_rule = new CustomXmlProcessor(this);
-
-            // Parse optional attributes
-            for (auto option : split<';'>(section.attribute("Optional").as_string())) {
-                custom_rule->add_optional(option);
-            }
-
-            for (auto option : section.child("Optional")) {
-                custom_rule->add_optional(option.text().as_string());
-            }
-
-            // Parse required attributes
-            for (auto option : split<';'>(section.attribute("Required").as_string())) {
-                custom_rule->add_optional(option);
-            }
-
-            for (auto option : section.child("Required")) {
-                custom_rule->add_required(option.text().as_string());
-            }
-
-            // Add template
-            custom_rule->set_html_template(section.child("Template"));
-            this->add_custom_rule(section.name(), custom_rule);
+            this->add_custom_rule(section.name(), CustomXmlProcessor(section));
         }
     }
 
-    void ResumeParser::process_children(const XmlNode& node, CTML::Node& parent) {
+    bool ResumeParser::try_get_rule(const std::string& name, XmlProcessor& out)
+    {
+        if (this->processors.find(name) != this->processors.end()) {
+            out = this->processors[name];
+            return true;
+        }
+
+        std::cout << "[Notice] Treating " << name << " as HTML tag" << std::endl;
+        return false;
+    }
+
+    void ResumeParser::process_children(XmlNode& node, CTML::Node& parent) {
         CTML::Node * prev_node = nullptr;
         for (auto& child : node.children()) {
             if (this->ignore.find(child.name()) != this->ignore.end()) {
@@ -61,17 +50,43 @@ namespace resume {
 
                 // Only process XML tags
             case pugi::xml_node_type::node_element: {
-                IXmlProcessor * processor = nullptr;
+                XmlProcessor processor;
+
+                // Look up custom rules
+                if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
+                    // Substitute
+                    node.insert_child_after(
+                        child.name(),
+                        this->custom_processors[child.name()].generate_xml(XmlNode(child))
+                    );
+                    node.remove_child(child);
+                }
 
                 // Look up associated rule for processing this node
                 if (this->try_get_rule(child.name(), processor)) {
-                    for (auto& html_node : processor->process_node(child)) {
-                        &(parent.AppendChild(html_node, prev_node));
+                    for (auto& html_node : processor.generate_html(child)) {
+                        parent.AppendChild(html_node, prev_node);
+                    }
+                }
+                else {
+                    // Treat as regular HTML tag if no hit
+                    std::string tag_name = child.name();
+
+                    // Strip out html_ prefix
+                    if (tag_name.substr(0, 5) == "html_") {
+                        tag_name = tag_name.substr(5);
                     }
 
-                    this->process_children(child, *prev_node);
+                    CTML::Node html_node(tag_name);
+                    for (auto& attr : child.attributes()) {
+                        html_node.SetAttribute(attr.name(), attr.as_string());
+                    }
+
+                    parent.AppendChild(html_node, prev_node);
                 }
 
+                // Recursively process children
+                this->process_children(child, *prev_node);
                 break;
             }
 

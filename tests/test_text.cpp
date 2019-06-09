@@ -17,4 +17,14 @@ namespace resume {
             REQUIRE(res[3] == "Grapefruits");
         }
     }
+
+    TEST_CASE("format() Test", "[string_format]") {
+        std::string fill_in = "There are {count} {animal} in the {location}.";
+        std::unordered_map<std::string, std::string> args = {
+            { "count", "5" },
+            { "animal", "sheep" },
+            { "location", "field" }
+        };
+        REQUIRE(format(fill_in, args) == "There are 5 sheep in the field.");
+    }
 }

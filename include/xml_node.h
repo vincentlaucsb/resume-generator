@@ -7,7 +7,7 @@ namespace resume {
         using XmlAttribute = pugi::xml_attribute;
 
     public:
-        XmlNode(const pugi::xml_node& node) : pugi::xml_node(node.internal_object()) {};
+        XmlNode(pugi::xml_node& node) : pugi::xml_node(node.internal_object()) {};
 
         XmlAttribute get_optional_attr(const std::string& attr) const;
     };

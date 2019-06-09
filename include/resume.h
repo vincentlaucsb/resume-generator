@@ -53,16 +53,20 @@ namespace resume {
             );
         }
 
-        void add_custom_rule(const std::string& section_name, CustomXmlProcessor * proc) {
-            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(proc);
+        void add_custom_rule(const std::string& section_name, const CustomXmlProcessor& proc) {
+            if (this->custom_processors.find(section_name) != this->custom_processors.end()) {
+                throw std::runtime_error("[Error] Rule for " + section_name + " already exists.");
+            }
+
+            this->custom_processors[section_name] = proc;
         }
 
         void add_rule(const std::string& section_name, XmlRule func, std::set<std::string> optional = {}, std::set<std::string> required = {}) {
-            this->processors[section_name] = std::unique_ptr<IXmlProcessor>(new XmlProcessor(
+            this->processors[section_name] = XmlProcessor(
                 func,
                 optional,
                 required
-            ));
+            );
         }
 
         std::string get_html() {
@@ -87,19 +91,12 @@ namespace resume {
         void parse_custom_tags();
 
         // Recursively process XML nodes and create HTML
-        void process_children(const XmlNode& node, CTML::Node& parent);
+        void process_children(XmlNode& node, CTML::Node& parent);
 
         // Try to get a rule or print out a warning message
-        bool try_get_rule(const std::string& name, IXmlProcessor *& out) {
-            if (this->processors.find(name) != this->processors.end()) {
-                out = this->processors[name].get();
-                return true;
-            }
+        bool try_get_rule(const std::string& name, XmlProcessor& out);
 
-            std::cout << "[Warning] No rule found for section " << name << "... skipping" << std::endl;
-            return false;
-        }
-
-        std::unordered_map<std::string, std::unique_ptr<IXmlProcessor>> processors = {};
+        std::unordered_map<std::string, XmlProcessor> processors = {};
+        std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
     };
 }

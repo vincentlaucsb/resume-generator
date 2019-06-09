@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <unordered_map>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -81,4 +82,7 @@ namespace resume {
         ret.push_back(std::string(in.substr(beg)));
         return ret;
     }
+
+    // Formats a string with the given arguments
+    std::string format(std::string_view, const std::unordered_map<std::string, std::string>&);
 }

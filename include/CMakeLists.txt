@@ -26,7 +26,8 @@ target_sources(resume_lib
 add_executable(resume "")
 target_sources(resume PRIVATE resume.cpp)
 
-target_link_libraries(resume resume_lib pugixml fmt)
+target_link_libraries(resume_lib pugixml fmt)
+target_link_libraries(resume resume_lib)
 
 target_include_directories(resume_lib
 	PUBLIC
