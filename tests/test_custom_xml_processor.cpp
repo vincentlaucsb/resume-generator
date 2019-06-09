@@ -28,7 +28,6 @@ namespace resume {
         custom_tag.print(std::cout);
 
         CustomXmlProcessor processor(xml_template);
-        auto output = processor.generate_xml(XmlNode(custom_tag.child("Header")));
-        output.print(std::cout);
+        std::cout << processor.generate_xml(XmlNode(custom_tag.child("Header")));
     }
 }

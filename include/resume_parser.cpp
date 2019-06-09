@@ -36,22 +36,31 @@ namespace resume {
     void ResumeParser::process_custom_tags(XmlNode node) {
         // Look up custom rules
         for (auto child : node.children()) {
-            this->process_custom_tags(XmlNode(child), node);
+            this->process_custom_tags(child, node);
         }
+
+        this->doc.print(std::cout);
     }
 
     void ResumeParser::process_custom_tags(XmlNode& node, XmlNode& parent_node) {
-        XmlNode new_node = node;
-        if (this->custom_processors.find(node.name()) != this->custom_processors.end()) {
-            new_node = parent_node.insert_child_before(
-                node.name(),
-                this->custom_processors[node.name()].generate_xml(node)
-            );
-            parent_node.remove_child(node);
-        }
+        if (this->ignore.find(node.name()) == this->ignore.end()) {
+            XmlNode new_node = node;
+            if (this->custom_processors.find(node.name()) != this->custom_processors.end()) {
+                std::string repl_node_str = this->custom_processors[node.name()].generate_xml(node);
+                pugi::xml_document temp;
+                temp.load_string(repl_node_str.c_str());
 
-        for (auto child : new_node.children()) {
-            this->process_custom_tags(child, node);
+                new_node = parent_node.insert_child_before(
+                    temp.first_child().name(), // Give the new node a name
+                    node                     // Insert new node before current node
+                );
+                new_node.append_copy(temp.first_child());
+                parent_node.remove_child(node);
+            }
+
+            for (auto child : new_node.children()) {
+                this->process_custom_tags(child, node);
+            }
         }
     }
 

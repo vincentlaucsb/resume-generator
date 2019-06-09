@@ -56,17 +56,23 @@ namespace resume {
         CustomXmlProcessor(const XmlNode& node);
 
         void set_xml_template(const XmlNode& node) {
+            std::string _template = "";
             xml_string_writer writer;
-            node.print(writer);
-            this->xml_template = writer.result;
+
+            for (auto child : node.children()) {
+                child.print(writer);
+                _template += writer.result;
+            }
+
+            this->xml_template = _template;
         }
 
-        pugi::xml_node generate_xml(XmlNode& custom_node);
+        std::string generate_xml(XmlNode& custom_node);
 
     protected:
         // Given attributes, fill in the XML template with said attribute values
         // and convert the template to an XmlNode object
-        pugi::xml_node generate_xml(Attributes& attrs);
+        std::string generate_xml(Attributes& attrs);
 
     private:
         // String template which consists of XML nodes that ResumeParser understands

@@ -51,19 +51,13 @@ namespace resume {
         set_xml_template(node.child("Template"));
     }
 
-    pugi::xml_node CustomXmlProcessor::generate_xml(XmlNode & custom_node)
+    std::string CustomXmlProcessor::generate_xml(XmlNode & custom_node)
     {
         return this->generate_xml(this->get_attributes(custom_node));
     }
 
-    pugi::xml_node CustomXmlProcessor::generate_xml(Attributes& attrs) {
-        std::string ret = resume::format(this->xml_template, attrs);
-        
-        // Construct XML from string
-        pugi::xml_document doc;
-        doc.load_string(ret.c_str());
-
-        return doc.child("Template");
+    std::string CustomXmlProcessor::generate_xml(Attributes& attrs) {
+        return resume::format(this->xml_template, attrs);
     }
 
     NodeList process_list(const Attributes& node) {
