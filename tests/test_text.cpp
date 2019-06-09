@@ -3,12 +3,18 @@
 
 namespace resume {
     TEST_CASE("String Split Test", "[string_split]") {
-        std::string test("Apples;Oranges;Strawberries;Grapefruits");
-        auto res = split<';'>(test);
+        auto str = GENERATE(as<std::string> {},
+            "Apples;Oranges;Strawberries;Grapefruits",
+            "Apples;    Oranges; Strawberries; Grapefruits" // Allow whitespace between delimiters
+        );
 
-        REQUIRE(res[0] == "Apples");
-        REQUIRE(res[1] == "Oranges");
-        REQUIRE(res[2] == "Strawberries");
-        REQUIRE(res[3] == "Grapefruits");
+        SECTION("Split Test") {
+            auto res = split<';'>(str);
+
+            REQUIRE(res[0] == "Apples");
+            REQUIRE(res[1] == "Oranges");
+            REQUIRE(res[2] == "Strawberries");
+            REQUIRE(res[3] == "Grapefruits");
+        }
     }
 }

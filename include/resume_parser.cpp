@@ -22,11 +22,19 @@ namespace resume {
             CustomXmlProcessor * custom_rule = new CustomXmlProcessor(this);
 
             // Parse optional attributes
+            for (auto option : split<';'>(section.attribute("Optional").as_string())) {
+                custom_rule->add_optional(option);
+            }
+
             for (auto option : section.child("Optional")) {
                 custom_rule->add_optional(option.text().as_string());
             }
 
             // Parse required attributes
+            for (auto option : split<';'>(section.attribute("Required").as_string())) {
+                custom_rule->add_optional(option);
+            }
+
             for (auto option : section.child("Required")) {
                 custom_rule->add_required(option.text().as_string());
             }

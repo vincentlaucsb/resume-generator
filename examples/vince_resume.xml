@@ -3,13 +3,7 @@
   <Stylesheet>resume.css</Stylesheet>
   <Stylesheet>https://fonts.googleapis.com/css?family=Montserrat:400,500,700</Stylesheet>
   <CustomTags>
-    <Header>
-      <Optional>
-        <Name>Address</Name>
-        <Name>Email</Name>
-        <Name>LinkedIn</Name>
-        <Name>Website</Name>
-      </Optional>
+    <Header Optional="Address; Email; LinkedIn; Website">
       <Template>
         <header>
           <h1 id="name">Vincent La</h1>

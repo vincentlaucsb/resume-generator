@@ -1,10 +1,28 @@
 #pragma once
+#include <array>
 #include <string>
 #include <string_view>
 #include <vector>
 
 // Contains text processing functions
 namespace resume {
+    constexpr std::array<bool, 256> make_whitespace_array() {
+        std::array<bool, 256> arr = {};
+        for (int i = -128; i < 128; i++) {
+            char ch = (char)i;
+            if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
+                arr[i + 128] = true;
+            }
+            else {
+                arr[i + 128] = false;
+            }
+        }
+
+        return arr;
+    }
+
+    constexpr std::array<bool, 256> WHITESPACE_CHARS = make_whitespace_array();
+
     bool is_capital(char ch);
 
     // Split a string by a delimiter
@@ -53,6 +71,10 @@ namespace resume {
                     ret.push_back(std::string(in.substr(beg, i - beg)));
                     beg = i + 1;
                 }
+            }
+            else if (i == beg && WHITESPACE_CHARS[ch + 128]) {
+                // Allow trailing spaces after delimiters
+                beg = i + 1;
             }
         }
 
