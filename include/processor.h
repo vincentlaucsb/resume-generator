@@ -25,11 +25,10 @@ namespace resume {
         NodeList process_node(const XmlNode& node);
 
     protected:
-        std::unordered_map<std::string, std::string> attrs;
         std::set<std::string> optional_attrs;
         std::set<std::string> required_attrs;
 
-        virtual NodeList generate_html() = 0;
+        virtual NodeList generate_html(Attributes& attrs) = 0;
     };
 
     class XmlProcessor: public IXmlProcessor {
@@ -45,8 +44,8 @@ namespace resume {
         }
         
     protected:
-        virtual NodeList generate_html() {
-            return this->html_generator(this->attrs);
+        virtual NodeList generate_html(Attributes& attrs) {
+            return this->html_generator(attrs);
         }
 
         XmlRule html_generator;
@@ -59,12 +58,12 @@ namespace resume {
         }
 
     protected:
-        virtual NodeList generate_html() override {
+        virtual NodeList generate_html(Attributes& attrs) override {
             NodeList list;
             for (auto child : *html_template) {
                 // Treat XML name as HTML tag name
                 list << CTML::Node(child.name());
-                this->process_html(child, list.back());
+                this->process_html(attrs, child, list.back());
             }
             return list;
         }
@@ -74,7 +73,7 @@ namespace resume {
         std::unique_ptr<XmlNode> html_template = nullptr;
 
         // Recursive callback for generate_html()
-        void process_html(const XmlNode& node, CTML::Node& html);
+        void process_html(Attributes& attrs, const XmlNode& node, CTML::Node& html);
     };
 
     NodeList process_subsection(Attributes& node);

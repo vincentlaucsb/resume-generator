@@ -3,6 +3,8 @@
 
 namespace resume {
     NodeList IXmlProcessor::process_node(const XmlNode& node) {
+        Attributes attrs;
+
         for (auto& attr : optional_attrs) {
             attrs[attr] = node.get_optional_attr(attr).as_string();
         }
@@ -17,15 +19,15 @@ namespace resume {
         }
 
         // Perform text processings
-        for (auto& [attr, value] : this->attrs) {
+        for (auto& [attr, value] : attrs) {
             dashify(value);
             url(value);
         }
 
-        return this->generate_html();
+        return this->generate_html(attrs);
     }
 
-    void CustomXmlProcessor::process_html(const XmlNode& node, CTML::Node& html) {
+    void CustomXmlProcessor::process_html(Attributes& attrs, const XmlNode& node, CTML::Node& html) {
         CTML::Node * last_child = nullptr;
         for (auto child : node.children()) {
             // Add text to section node
@@ -36,20 +38,23 @@ namespace resume {
             // Only process XML tags
             if (child.type() == pugi::xml_node_type::node_element) {
                 auto name = lower(child.name());
+
                 if (name != "placeholder") {
                     // Regular HTML node
                     CTML::Node html_node(name);
+
+                    // Copy attributes
                     for (auto attr : child.attributes()) {
                         html_node.SetAttribute(attr.name(), attr.value());
                     }
 
                     html.AppendChild(html_node, last_child);
-                    this->process_html(child, *last_child);
+                    this->process_html(attrs, child, *last_child);
                 }
                 else {
                     // Replace placeholder
                     auto attr_to_get = child.attribute("Value").as_string();
-                    html.AppendText(this->attrs[attr_to_get]);
+                    html.AppendText(attrs[attr_to_get]);
                 }
 
                 // TODO: Allow users to reference other defined tags

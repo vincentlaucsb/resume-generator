@@ -83,6 +83,16 @@
         <Item>A sexy resume generator</Item>
       </List>
     </Subsection>
+	<Subsection
+	  Title="Auto Cost Calculator"
+	  Subtitle="https://github.com/vincentlaucsb/Auto-Cost-Calculator"
+    Right="TypeScript, ReactJS"
+	>
+	  <List>
+		<Item>Utilized JavaScript/TypeScript and React to create tool to help consumers decide whether or not to buy a new (used) car</Item>
+		<Item>Integrated different JavaScript libraries to implement graphing and drag-and-drop functionality</Item>
+	  </List>
+	</Subsection>
   </Section>
   <Section Title="Technical Skills">
     <List>
