@@ -6,6 +6,8 @@
 #include "xml_node.h"
 
 namespace resume {
+    class ResumeParser;
+
     class IXmlProcessor {
     public:
         IXmlProcessor(std::set<std::string> optional = {}, std::set<std::string> required = {}) :
@@ -53,6 +55,8 @@ namespace resume {
 
     class CustomXmlProcessor : public XmlProcessor {
     public:
+        CustomXmlProcessor(ResumeParser * parser) : parent(parser) {};
+
         void set_html_template(const XmlNode& node) {
             this->html_template = std::make_unique<XmlNode>(node);
         }
@@ -69,6 +73,8 @@ namespace resume {
         }
 
     private:
+        ResumeParser * parent = nullptr;
+
         // XML describing HTML output
         std::unique_ptr<XmlNode> html_template = nullptr;
 

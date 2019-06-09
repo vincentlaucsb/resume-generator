@@ -37,3 +37,4 @@ build/
 *.out
 *.app
 /install/x64-Release
+/install/x64-Debug

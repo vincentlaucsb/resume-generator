@@ -11,6 +11,8 @@
 #include "text.h"
 
 namespace resume {
+    class CustomXmlProcessor;
+
     class H3 : public CTML::Node {
     public:
         H3() : CTML::Node("h3") {}
@@ -66,6 +68,8 @@ namespace resume {
         std::string get_html() {
             return this->html_document.ToString();
         }
+
+        friend CustomXmlProcessor;
 
     private:
         // Tags to ignore while generating HTML

@@ -10,3 +10,6 @@
 [submodule "include/CTML"]
 	path = include/CTML
 	url = https://github.com/vincentlaucsb/CTML.git
+[submodule "include/cxxopts"]
+	path = include/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git

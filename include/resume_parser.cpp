@@ -19,7 +19,7 @@ namespace resume {
         auto custom_tags = resume().child("CustomTags");
         for (auto section : custom_tags) {
             std::cout << "Reading custom rule " << section.name() << std::endl;
-            CustomXmlProcessor * custom_rule = new CustomXmlProcessor();
+            CustomXmlProcessor * custom_rule = new CustomXmlProcessor(this);
 
             // Parse optional attributes
             for (auto option : section.child("Optional")) {

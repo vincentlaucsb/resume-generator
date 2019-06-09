@@ -1,10 +1,12 @@
 set(PUGIXML_DIR ${CMAKE_CURRENT_LIST_DIR}/pugixml)
 set(FMTLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/fmt)
 set(CTML_DIR ${CMAKE_CURRENT_LIST_DIR}/CTML)
+set(CXXOPTS_DIR ${CMAKE_CURRENT_LIST_DIR}/cxxopts)
 
 add_subdirectory(pugixml)
 add_subdirectory(fmt)
 add_subdirectory(CTML)
+add_subdirectory(cxxopts)
 
 add_executable(resume "")
 target_sources(resume
@@ -29,6 +31,7 @@ target_include_directories(resume
 		${PUGIXML_DIR}/src
 		${FMTLIB_DIR}/include
 		${CTML_DIR}/include
+        ${CXXOPTS_DIR}/include
 )
 
 # Copy examples into build directory for easier debugging
