@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <set>
 #include "common.h"
-#include "xml_node.h"
 
 namespace resume {
     class ResumeParser;

@@ -19,8 +19,6 @@ target_sources(resume_lib
         resume_parser.cpp
         text.h
         text.cpp
-        xml_node.h
-        xml_node.cpp
 )
 
 add_executable(resume "")

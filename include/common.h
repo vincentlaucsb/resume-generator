@@ -13,7 +13,7 @@ namespace resume {
     using NodeList = std::vector<CTML::Node>;
 
     // Forward declaration
-    class XmlNode;
+    using XmlNode = pugi::xml_node;
 
     using Attributes = std::unordered_map<std::string, std::string>;
 

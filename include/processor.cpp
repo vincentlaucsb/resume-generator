@@ -6,7 +6,7 @@ namespace resume {
         Attributes attrs;
 
         for (auto& attr : optional_attrs) {
-            attrs[attr] = node.get_optional_attr(attr).as_string();
+            attrs[attr] = node.attribute(attr.c_str()).as_string();
         }
 
         for (auto& attr : required_attrs) {

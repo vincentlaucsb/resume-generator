@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <functional>
 
+#include "common.h"
 #include "processor.h"
 #include "text.h"
 
@@ -24,6 +25,9 @@ namespace resume {
             this->result = doc.load_file(file.c_str());
         };
 
+        // Recursively replace custom tags
+        void process_custom_tags(XmlNode node);
+
         // Returns True if XML loaded successfully
         bool ok() {
             return bool(result);
@@ -33,6 +37,7 @@ namespace resume {
             this->set_title(resume().attribute("Title").as_string());
             this->parse_stylesheets();
             this->parse_custom_tags();
+            this->process_custom_tags(resume());
             this->process_resume(resume());
             return this->get_html();
         }
@@ -89,6 +94,8 @@ namespace resume {
 
         // Parse user-defined tags
         void parse_custom_tags();
+
+        void process_custom_tags(XmlNode& node, XmlNode& parent_node);
 
         // Recursively process XML nodes and create HTML
         void process_children(XmlNode& node, CTML::Node& parent);

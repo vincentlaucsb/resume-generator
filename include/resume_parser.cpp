@@ -30,8 +30,29 @@ namespace resume {
             return true;
         }
 
-        std::cout << "[Notice] Treating " << name << " as HTML tag" << std::endl;
         return false;
+    }
+
+    void ResumeParser::process_custom_tags(XmlNode node) {
+        // Look up custom rules
+        for (auto child : node.children()) {
+            this->process_custom_tags(XmlNode(child), node);
+        }
+    }
+
+    void ResumeParser::process_custom_tags(XmlNode& node, XmlNode& parent_node) {
+        XmlNode new_node = node;
+        if (this->custom_processors.find(node.name()) != this->custom_processors.end()) {
+            new_node = parent_node.insert_child_before(
+                node.name(),
+                this->custom_processors[node.name()].generate_xml(node)
+            );
+            parent_node.remove_child(node);
+        }
+
+        for (auto child : new_node.children()) {
+            this->process_custom_tags(child, node);
+        }
     }
 
     void ResumeParser::process_children(XmlNode& node, CTML::Node& parent) {
@@ -52,18 +73,9 @@ namespace resume {
             case pugi::xml_node_type::node_element: {
                 XmlProcessor processor;
 
-                // Look up custom rules
-                if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
-                    // Substitute
-                    node.insert_child_after(
-                        child.name(),
-                        this->custom_processors[child.name()].generate_xml(XmlNode(child))
-                    );
-                    node.remove_child(child);
-                }
-
                 // Look up associated rule for processing this node
                 if (this->try_get_rule(child.name(), processor)) {
+                    std::cout << "Processing " << child.name() << std::endl;
                     for (auto& html_node : processor.generate_html(child)) {
                         parent.AppendChild(html_node, prev_node);
                     }
@@ -77,6 +89,8 @@ namespace resume {
                         tag_name = tag_name.substr(5);
                     }
 
+                    std::cout << "Processing HTML tag " << tag_name << std::endl;
+
                     CTML::Node html_node(tag_name);
                     for (auto& attr : child.attributes()) {
                         html_node.SetAttribute(attr.name(), attr.as_string());
@@ -86,7 +100,7 @@ namespace resume {
                 }
 
                 // Recursively process children
-                this->process_children(child, *prev_node);
+                this->process_children(XmlNode(child), *prev_node);
                 break;
             }
 
