@@ -1,10 +1,15 @@
 #pragma once
 #include <string>
 #include <string_view>
+#include <vector>
 
 // Contains text processing functions
 namespace resume {
     bool is_capital(char ch);
+
+    // Split a string by a delimiter
+    template<char Delim>
+    std::vector<std::string> split(std::string_view);
 
     // Return lowercase version of a string
     std::string lower(std::string_view);
@@ -36,4 +41,22 @@ namespace resume {
 
     // Wraps URLs with <a> tags
     void url(std::string& str);
+    template<char Delim>
+    std::vector<std::string> split(std::string_view in)
+    {
+        std::vector<std::string> ret = {};
+        size_t beg = 0;
+        for (size_t i = 0; i < in.size(); i++) {
+            const char & ch = in[i];
+            if (ch == Delim) {
+                if (beg != i) {
+                    ret.push_back(std::string(in.substr(beg, i - beg)));
+                    beg = i + 1;
+                }
+            }
+        }
+
+        ret.push_back(std::string(in.substr(beg)));
+        return ret;
+    }
 }
