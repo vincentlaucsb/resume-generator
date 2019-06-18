@@ -63,14 +63,6 @@ namespace resume {
             this->custom_processors[section_name] = proc;
         }
 
-        void add_rule(const std::string& section_name, XmlRule func, std::set<std::string> optional = {}, std::set<std::string> required = {}) {
-            this->processors[section_name] = XmlProcessor(
-                func,
-                optional,
-                required
-            );
-        }
-
         std::string get_html() {
             return this->html_document.ToString();
         }
@@ -78,8 +70,6 @@ namespace resume {
         friend CustomXmlProcessor;
 
     private:
-        // Tags to ignore while generating HTML
-        static const std::set<std::string> ignore;
         pugi::xml_document doc;
         CTML::Document html_document;
         pugi::xml_parse_result result;
@@ -120,11 +110,6 @@ namespace resume {
 
         // Recursively process XML nodes and create HTML
         std::string process_children(const XmlNode& node);
-
-        // Try to get a rule or print out a warning message
-        bool try_get_rule(const std::string& name, XmlProcessor& out);
-
-        std::unordered_map<std::string, XmlProcessor> processors = {};
         std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
     };
 }

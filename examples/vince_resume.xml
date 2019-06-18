@@ -2,54 +2,6 @@
 <Resume Title="Vincent La's Resume">
   <Stylesheet>resume.css</Stylesheet>
   <Stylesheet>https://fonts.googleapis.com/css?family=Montserrat:400,500,700</Stylesheet>
-  <CustomTags>
-    <Header Optional="Address; Email; LinkedIn; Website">
-      <header>
-          <h1 id="name">Vincent La</h1>
-          <p>
-            <span>{{Address}}</span>
-            <span>{{{Email}}}</span>
-            <span>{{{LinkedIn}}}</span>
-            <span>{{{Website}}}</span>
-          </p>
-        </header>
-    </Header>
-    <Work>
-      <section>
-      <h2>Work Experience</h2>
-      {{{Children}}}
-      </section>
-    </Work>
-    <Section Required="Title">
-      <section>
-        <h2>{{Title}}</h2>
-        {{{Children}}}
-      </section>
-    </Section>
-    <Subsection Required="Title" Optional="Subtitle; Right">
-      <div id="subtitle">
-        <div class="subsection">
-          <h3>{{Title}}
-            <span>{{Right}}</span>
-          </h3>
-          <p class="subtitle">{{{Subtitle}}}</p>
-          
-          {{{Children}}}
-        </div>
-      </div>
-    </Subsection>
-    <Items>
-      <ul>
-        {{{Children}}}
-      </ul>
-    </Items>
-    <Item Optional="Header">
-      <li>
-        {{#HeaderPresent}}<b>{{Header}}</b>{{/HeaderPresent}}
-        {{Text}}
-      </li>
-    </Item>
-  </CustomTags>
   <Header
     Email="vincela9@gmail.com"
     LinkedIn="www.linkedin.com/in/vincent-la-sb"
@@ -122,4 +74,64 @@
       <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
     </Items>
   </Section>
+  <Templates>
+    <Header Optional="Address; Email; LinkedIn; Website">
+      <header>
+        <h1 id="name">Vincent La</h1>
+        <p>
+          <span>{{Address}}</span>
+          <span>{{{Email}}}</span>
+          <span>{{{LinkedIn}}}</span>
+          <span>{{{Website}}}</span>
+        </p>
+      </header>
+    </Header>
+    <Work>
+      <section>
+        <h2>Work Experience</h2>
+        {{{Children}}}
+      </section>
+    </Work>
+    <Section Required="Title">
+      <section>
+        <h2>{{Title}}</h2>
+        {{{Children}}}
+      </section>
+    </Section>
+    <Subsection Required="Title" Optional="Subtitle; Right">
+      <div id="subtitle">
+        <div class="subsection">
+          <h3>
+            {{Title}}
+            <span>{{Right}}</span>
+          </h3>
+          <p class="subtitle">{{{Subtitle}}}</p>
+          {{{Children}}}
+        </div>
+      </div>
+    </Subsection>
+    <School Required="Name; Years; Degree" Optional="GPA">
+      <div id="subtitle">
+        <div class="subsection">
+          <h3>
+            {{Name}}
+            <span>{{{Years}}}</span>
+          </h3>
+          <p class="subtitle">{{Degree}} -- {{GPA}}</p>
+          {{{Children}}}
+        </div>
+      </div>
+    </School>
+    <Items>
+      <ul>
+        {{{Children}}}
+      </ul>
+    </Items>
+    <Item Optional="Header">
+      <li>
+        {{#HeaderPresent}}<b>{{Header}}</b>{{/HeaderPresent}}
+        {{Text}}
+      </li>
+    </Item>
+  </Templates>
 </Resume>
