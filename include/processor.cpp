@@ -11,7 +11,7 @@ namespace resume {
 
         for (auto& attr : required_attrs) {
             std::string attr_value = node.attribute(attr.c_str()).as_string();
-            if (attr_value.empty()) {
+            if (!attr.empty() && attr_value.empty()) {
                 throw std::runtime_error("[Error] Required attribute " + attr + " not found in " + node.name() + ".");
             }
 
@@ -33,7 +33,7 @@ namespace resume {
 
         // Parse required attributes
         for (auto option : split<';'>(node.attribute("Required").as_string())) {
-            add_optional(option);
+            add_required(option);
         }
 
         for (auto option : node.child("Required")) {
@@ -57,13 +57,12 @@ namespace resume {
             context[key] = val;
         }
 
-        // TODO: Not working
         for (auto& attr : optional_attrs) {
             if (attrs.find(attr) == attrs.end()) {
-                context[attr + "Present"] = false;
+                context[attr] = false;
             }
             else {
-                context[attr + "Present"] = true;
+                context[attr] = mstch::map({ { "Value", attrs.find(attr)->second } });
             }
         }
 

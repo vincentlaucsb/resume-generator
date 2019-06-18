@@ -85,7 +85,7 @@ header p {
 
 header p span {
     display: inline-block;
-    margin-right: 1em;
+    margin-left: 1em;
 }
 /* End Header */
 
@@ -103,4 +103,20 @@ ul {
 
 li {
     list-style-position: outside;
+}
+
+/* Custom Elements */
+th.skill-header {
+    font-family: Montserrat, sans-serif;
+    min-width: 8em;
+    text-align: left;
+    vertical-align: top
+}
+
+/* Print Settings */
+@media print {
+    body {
+        margin: 0;
+        max-width: 100%;
+    }
 }

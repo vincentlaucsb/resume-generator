@@ -2,6 +2,7 @@
 #include "catch.hpp"
 #include "processor.h"
 
+/**
 namespace resume {
     TEST_CASE("Custom XML Processor", "[custom_xml_proc]") {
         std::string xml_template_str = "<Header Optional=\"Address; Email; LinkedIn; Website\">"
@@ -31,3 +32,4 @@ namespace resume {
         std::cout << processor.generate_xml(XmlNode(custom_tag.child("Header")));
     }
 }
+**/

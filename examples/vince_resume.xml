@@ -79,10 +79,10 @@
       <header>
         <h1 id="name">Vincent La</h1>
         <p>
-          <span>{{Address}}</span>
-          <span>{{{Email}}}</span>
-          <span>{{{LinkedIn}}}</span>
-          <span>{{{Website}}}</span>
+          {{#Address}}<span>{{Value}}</span>{{/Address}}
+          {{#Email}}<span>{{{Value}}}</span>{{/Email}}
+          {{#LinkedIn}}<span>{{{Value}}}</span>{{/LinkedIn}}
+          {{#Website}}<span>{{{Value}}}</span>{{/Website}}
         </p>
       </header>
     </Header>
@@ -99,27 +99,23 @@
       </section>
     </Section>
     <Subsection Required="Title" Optional="Subtitle; Right">
-      <div id="subtitle">
-        <div class="subsection">
-          <h3>
-            {{Title}}
-            <span>{{Right}}</span>
-          </h3>
-          <p class="subtitle">{{{Subtitle}}}</p>
-          {{{Children}}}
-        </div>
+      <div class="subsection">
+        <h3>
+          {{Title}}
+          {{#Right}}<span>{{Value}}</span>{{/Right}}
+        </h3>
+        <p class="subtitle">{{{Subtitle}}}</p>
+        {{{Children}}}
       </div>
     </Subsection>
     <School Required="Name; Years; Degree" Optional="GPA">
-      <div id="subtitle">
-        <div class="subsection">
-          <h3>
-            {{Name}}
-            <span>{{{Years}}}</span>
-          </h3>
-          <p class="subtitle">{{Degree}} -- {{GPA}}</p>
-          {{{Children}}}
-        </div>
+      <div class="subsection">
+        <h3>
+          {{Name}}
+          <span>{{{Years}}}</span>
+        </h3>
+        <p class="subtitle">{{Degree}}{{#GPA}} -- {{Value}}{{/GPA}}</p>
+        {{{Children}}}
       </div>
     </School>
     <Items>
@@ -127,9 +123,11 @@
         {{{Children}}}
       </ul>
     </Items>
-    <Item Optional="Header">
+    <Item Optional="Heading">
       <li>
-        {{#HeaderPresent}}<b>{{Header}}</b>{{/HeaderPresent}}
+        {{#Heading}}
+        <b>{{Value}}</b>
+        {{/Heading}}
         {{Text}}
       </li>
     </Item>
