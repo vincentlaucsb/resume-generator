@@ -55,7 +55,7 @@ namespace resume {
     public:
         CustomXmlProcessor() = default;
         CustomXmlProcessor(const XmlNode& node);
-        std::string render(XmlNode& custom_node);
+        std::string render(const XmlNode& custom_node, std::string_view children = "");
 
     protected:
         // Given attributes, fill in the XML template with said attribute values

@@ -8,12 +8,41 @@
           <h1 id="name">Vincent La</h1>
           <p>
             <span>{{Address}}</span>
-            <span>{{Email}}</span>
-            <span>{{LinkedIn}}</span>
-            <span>{{Website}}</span>
+            <span>{{{Email}}}</span>
+            <span>{{{LinkedIn}}}</span>
+            <span>{{{Website}}}</span>
           </p>
         </header>
     </Header>
+    <Work>
+      <section>
+      <h2>Work Experience</h2>
+      {{{Children}}}
+      </section>
+    </Work>
+    <Section Required="Title">
+      <section>
+        <h2>{{Title}}</h2>
+        {{{Children}}}
+      </section>
+    </Section>
+    <Subsection Required="Title" Optional="Subtitle; Right">
+      <div id="subtitle">
+        <div class="subsection">
+          <h3>{{Title}}
+            <span>{{Right}}</span>
+          </h3>
+          <p class="subtitle">{{{Subtitle}}}</p>
+          
+          {{{Children}}}
+        </div>
+      </div>
+    </Subsection>
+    <Items>
+      <ul>
+        {{{Children}}}
+      </ul>
+    </Items>
     <Item Optional="Header">
       <li>
         {{#HeaderPresent}}<b>{{Header}}</b>{{/HeaderPresent}}
@@ -26,26 +55,28 @@
     LinkedIn="www.linkedin.com/in/vincent-la-sb"
     Website="vincela.com"
   />
-  <Section Title="Work Experience">
+  <Work>
     <Subsection
 	  Title="Raytheon Company"
 	  Subtitle="Software Engineer"
 	  Right="January 2019 -- Present">
-      * Refactored code, fixed bugs, and created design documents for a >50k LOC Windows desktop (C#) application
-      * Rewrote most of a key plugin to be faster and maintainable; resolved thread deadlocks
-      * Designed and implemented embedded C++ software responsible for communicating between different hardware
+      <Items>
+        <Item>Refactored code, fixed bugs, and created design documents for a >50k LOC Windows desktop (C#) application</Item>
+        <Item>Rewrote most of a key plugin to be faster and maintainable; resolved thread deadlocks</Item>
+        <Item>Designed and implemented embedded C++ software responsible for communicating between different hardware</Item>
+      </Items>
     </Subsection>
-  </Section>
+  </Work>
   <Section Title="Education">
     <School
       Name="University of California, Santa Barbara"
       Years="2013 -- 2018"
       Degree="BA Mathematics"
       GPA="3.3 GPA (Dean's List x1)">
-      <List>
+      <Items>
         <Item>Computer Science Coursework (upper division): data structures and algorithms, database management systems, teaching computing science</Item>
         <Item>Minor in Statistical Science including graduate data mining and time series analysis</Item>
-      </List>
+      </Items>
     </School>
   </Section>
   <Section Title="Projects">
@@ -54,41 +85,41 @@
       Subtitle="https://github.com/vincentlaucsb/csv-parser -- 96% code coverage"
       Right="C++, CMake, gcov, Valgrind"
     >
-      <List>
+      <Items>
         <Item>A multi-threaded C++11 CSV parser featuring iterators and ability to parse at over 200MB/s</Item>
         <Item>Was solely responsible for all aspects of software development from design to implementation and testing</Item>
         <Item>Utilized continuous integration services to ensure cross-platform, cross-compiler compatibility</Item>
-      </List>
+      </Items>
     </Subsection>
     <Subsection
       Title="Resume Generator"
       Subtitle="https://github.com/vincentlaucsb/resume-generator"
       Right="C++17, HTML/CSS, XML, CMake"
     >
-      <List>
+      <Items>
         <Item>A sexy resume generator</Item>
-      </List>
+      </Items>
     </Subsection>
     <Subsection
       Title="Auto Cost Calculator"
       Subtitle="https://github.com/vincentlaucsb/Auto-Cost-Calculator"
       Right="TypeScript, ReactJs"
 	>
-      <List>
+      <Items>
         <Item>Utilized JavaScript/TypeScript and React to create tool to help consumers decide whether or not to buy a new (used) car</Item>
         <Item>Integrated different JavaScript libraries to implement graphing and drag-and-drop functionality</Item>
-      </List>
+      </Items>
     </Subsection>
   </Section>
   <Section Title="Technical Skills">
-    <List>
+    <Items>
       <Item Heading="Primary Languages">C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
       <Item Heading="Secondary Languages">
-        Ruby, R, <b>CSS/SASS (e.g. this resume)</b>, JavaScript, LaTeX, Bash scripting, Procedural SQL
+        Ruby, R, CSS/SASS (e.g. this resume), JavaScript, LaTeX, Bash scripting, Procedural SQL
       </Item>
       <Item Heading="Frameworks">React, Ruby on Rails, Django, Boost, Windows Presentation Foundation (WPF)</Item>
       <Item Heading="Software/OS">Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
       <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>
-    </List>
+    </Items>
   </Section>
 </Resume>

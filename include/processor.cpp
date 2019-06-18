@@ -48,7 +48,7 @@ namespace resume {
         }
     }
 
-    std::string CustomXmlProcessor::render(XmlNode & custom_node)
+    std::string CustomXmlProcessor::render(const XmlNode & custom_node, std::string_view children)
     {
         Attributes attrs = this->get_attributes(custom_node);
 
@@ -67,6 +67,7 @@ namespace resume {
             }
         }
 
+        context["Children"] = std::string(children);
         context["Text"] = std::string(custom_node.child_value());
         return mstch::render(this->mstch_template, context);
     }

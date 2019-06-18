@@ -46,7 +46,7 @@ namespace resume {
 
         void process_resume(XmlNode node) {
             auto & body = this->html_document.body();
-            this->process_children(node, body);
+            body.AppendText(this->process_children(node));
         }
 
         void set_title(const std::string& text) {
@@ -119,7 +119,7 @@ namespace resume {
         void process_custom_tags(XmlNode& node, XmlNode& parent);
 
         // Recursively process XML nodes and create HTML
-        void process_children(XmlNode& node, CTML::Node& parent);
+        std::string process_children(const XmlNode& node);
 
         // Try to get a rule or print out a warning message
         bool try_get_rule(const std::string& name, XmlProcessor& out);

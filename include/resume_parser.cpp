@@ -36,34 +36,23 @@ namespace resume {
         return false;
     }
 
-    void ResumeParser::process_children(XmlNode& node, CTML::Node& parent) {
-        CTML::Node * prev_node = nullptr;
-        for (auto& child : node.children()) {
+    std::string ResumeParser::process_children(const XmlNode& node) {
+        std::string ret;
+        for (auto child : node.children()) {
             if (this->ignore.find(child.name()) != this->ignore.end()) {
                 // Ignore stylesheets, custom tags, etc..
                 continue;
             }
 
-            switch (child.type()) {
-                // Add text to section node
-            //case pugi::xml_node_type::node_pcdata:
-            //    parent.AppendText(child.text().as_string());
-            //    break;
-
-                // Only process XML tags
-            case pugi::xml_node_type::node_element: {
+            // Only process XML tags
+            if (child.type() == pugi::xml_node_type::node_element) {
                 XmlProcessor processor;
 
                 // Look up associated rule for processing this node
-                if (this->try_get_rule(child.name(), processor)) {
-                    std::cout << "Processing " << child.name() << std::endl;
-                    for (auto& html_node : processor.generate_html(child)) {
-                        parent.AppendChild(html_node, prev_node);
-                    }
-                }
-                else if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
-                    parent.AppendText(this->custom_processors.find(child.name())->second.render(child));
-                    prev_node = &parent;
+                if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
+                    std::cout << "Using custom rule " << child.name() << std::endl;
+                    std::string processed_children = this->process_children(child);
+                    ret += this->custom_processors.find(child.name())->second.render(child, processed_children);
                 }
                 else {
                     // Treat as regular HTML tag if no hit
@@ -81,17 +70,11 @@ namespace resume {
                         html_node.SetAttribute(attr.name(), attr.as_string());
                     }
 
-                    parent.AppendChild(html_node, prev_node);
+                    ret += html_node.ToString();
                 }
-
-                // Recursively process children
-                this->process_children(XmlNode(child), *prev_node);
-                break;
-            }
-
-            default:
-                break;
             }
         }
+
+        return ret;
     }
 }
