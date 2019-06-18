@@ -41,17 +41,25 @@ namespace resume {
         }
 
         // Add template
-        // TODO: Throw error if not found
-        set_xml_template(node.child("Template"));
+        xml_string_writer writer;
+        for (auto child : node.children()) {
+            child.print(writer);
+            this->mstch_template += writer.result;
+        }
     }
 
-    std::string CustomXmlProcessor::generate_xml(XmlNode & custom_node)
+    std::string CustomXmlProcessor::render(XmlNode & custom_node)
     {
-        return this->generate_xml(this->get_attributes(custom_node));
+        return this->render(this->get_attributes(custom_node));
     }
 
-    std::string CustomXmlProcessor::generate_xml(Attributes& attrs) {
-        return resume::format(this->xml_template, attrs);
+    std::string CustomXmlProcessor::render(Attributes& attrs) {
+        mstch::map context;
+        for (auto&[key, val] : attrs) {
+            context[key] = val;
+        }
+
+        return mstch::render(this->mstch_template, context);
     }
 
     NodeList process_list(const Attributes& node) {
@@ -78,13 +86,18 @@ namespace resume {
 
     NodeList process_school(Attributes& attr) {
         NodeList list;
-        CTML::Node container("div");
-        container << add_subsection(
+        list << add_subsection(
             attr["Name"],
             attr["Years"],
             attr["Degree"] + " &ndash; " +
             attr["GPA"]);
-        list << container;
+        return list;
+    }
+
+    NodeList process_section(Attributes & attrs)
+    {
+        NodeList list;
+        list << CTML::Node("div").AppendChild(CTML::Node("h2", attrs["Title"]));
         return list;
     }
 

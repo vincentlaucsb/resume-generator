@@ -55,31 +55,19 @@ namespace resume {
     public:
         CustomXmlProcessor() = default;
         CustomXmlProcessor(const XmlNode& node);
-
-        void set_xml_template(const XmlNode& node) {
-            std::string _template = "";
-            xml_string_writer writer;
-
-            for (auto child : node.children()) {
-                child.print(writer);
-                _template += writer.result;
-            }
-
-            this->xml_template = _template;
-        }
-
-        std::string generate_xml(XmlNode& custom_node);
+        std::string render(XmlNode& custom_node);
 
     protected:
         // Given attributes, fill in the XML template with said attribute values
         // and convert the template to an XmlNode object
-        std::string generate_xml(Attributes& attrs);
+        std::string render(Attributes& attrs);
 
     private:
-        // String template which consists of XML nodes that ResumeParser understands
-        std::string xml_template;
+        // Mustache template
+        std::string mstch_template = "";
     };
 
+    NodeList process_section(Attributes& node);
     NodeList process_subsection(Attributes& node);
     NodeList process_school(Attributes& attr);
     NodeList process_list(const Attributes& node);

@@ -7,6 +7,7 @@
 #include "pugixml.hpp"
 #include "ctml.hpp"
 #include "fmt/format.h"
+#include "mstch.hpp"
 
 namespace resume {
     // A list of HTML nodes

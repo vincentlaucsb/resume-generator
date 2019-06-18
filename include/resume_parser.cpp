@@ -36,65 +36,6 @@ namespace resume {
         return false;
     }
 
-    void ResumeParser::process_custom_tags(XmlNode node) {
-        // Iteration 1: Substitute custom tags
-        for (auto child : node.children()) {
-            this->process_custom_tags(child, node);
-        }
-
-        // Iteration 2: Remove custom tags
-        std::deque<XmlNode> search_queue = { node };
-        while (!search_queue.empty()) {
-            auto current = search_queue.front();
-            search_queue.pop_front();
-
-            if (this->custom_processors.find(current.name()) == this->custom_processors.end()) {
-                for (auto child : current) {
-                    search_queue.push_front(child);
-                }
-            }
-            else {
-                current.parent().remove_child(current);
-            }
-        }
-    }
-
-    void ResumeParser::process_custom_tags(XmlNode& node, XmlNode& parent_node) {
-        if (this->ignore.find(node.name()) == this->ignore.end()) {
-            XmlNode new_node = node;
-            if (this->custom_processors.find(node.name()) != this->custom_processors.end()) {
-                std::string repl_node_str = this->custom_processors[node.name()].generate_xml(node);
-                pugi::xml_document temp;
-                temp.load_string(repl_node_str.c_str());
-
-                // Copy children of node we're replacing
-                for (auto child : node) {
-                    temp.first_child().append_copy(child);
-                }
-
-                new_node = parent_node.insert_child_before(
-                    temp.first_child().name(), // Give the new node a name
-                    node                       // Insert new node before current node
-                );
-
-                // Copy attributes
-                for (auto attr : temp.first_child().attributes()) {
-                    new_node.append_attribute(attr.name());
-                    new_node.attribute(attr.name()).set_value(attr.value());
-                }
-
-                // Copy children of replacement node
-                for (auto child : temp.first_child()) {
-                    new_node.append_copy(child);
-                }
-            }
-
-            for (auto child : new_node.children()) {
-                this->process_custom_tags(child, new_node);
-            }
-        }
-    }
-
     void ResumeParser::process_children(XmlNode& node, CTML::Node& parent) {
         CTML::Node * prev_node = nullptr;
         for (auto& child : node.children()) {
@@ -119,6 +60,10 @@ namespace resume {
                     for (auto& html_node : processor.generate_html(child)) {
                         parent.AppendChild(html_node, prev_node);
                     }
+                }
+                else if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
+                    parent.AppendText(this->custom_processors.find(child.name())->second.render(child));
+                    prev_node = &parent;
                 }
                 else {
                     // Treat as regular HTML tag if no hit

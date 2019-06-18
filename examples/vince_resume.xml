@@ -4,50 +4,36 @@
   <Stylesheet>https://fonts.googleapis.com/css?family=Montserrat:400,500,700</Stylesheet>
   <CustomTags>
     <Header Optional="Address; Email; LinkedIn; Website">
-      <Template>
-        <header>
+      <header>
           <h1 id="name">Vincent La</h1>
           <p>
-            <span>
-              <Placeholder Value="Address"></Placeholder>
-            </span>
-            <span>
-              <Placeholder Value="Email"></Placeholder>
-            </span>
-            <span>
-            <Placeholder Value="LinkedIn"></Placeholder>
-            </span>
-            <span>
-            <Placeholder Value="Website"></Placeholder>
-            </span>
+            <span>{{Address}}</span>
+            <span>{{Email}}</span>
+            <span>{{LinkedIn}}</span>
+            <span>{{Website}}</span>
           </p>
         </header>
-      </Template>
     </Header>
-    <Section>
-      <Required>
-        <Name>Title</Name>
-      </Required>
-      <Template>
-        <!-- TODO: Unmangle our <section> tag from html <section> tag -->
-        <section>
-          <h2>
-            <Placeholder Value="Title"></Placeholder>
-          </h2>
-          <!-- Content of children go here -->
-        </section>
-      </Template>
-    </Section>
   </CustomTags>
   <Header
     Email="vincela9@gmail.com"
     LinkedIn="www.linkedin.com/in/vincent-la-sb"
     Website="vincela.com"
   />
+  <Section Title="Work Experience">
+    <Subsection
+	  Title="Raytheon Company"
+	  Subtitle="Software Engineer"
+	  Right="January 2019 -- Present">
+      * Refactored code, fixed bugs, and created design documents for a >50k LOC Windows desktop (C#) application
+      * Rewrote most of a key plugin to be faster and maintainable; resolved thread deadlocks
+      * Designed and implemented embedded C++ software responsible for communicating between different hardware
+    </Subsection>
+  </Section>
   <Section Title="Education">
     <School
       Name="University of California, Santa Barbara"
-      Years="2013-2018"
+      Years="2013 -- 2018"
       Degree="BA Mathematics"
       GPA="3.3 GPA (Dean's List x1)">
       <List>
@@ -60,7 +46,7 @@
     <Subsection
       Title="CSV Parser"
       Subtitle="https://github.com/vincentlaucsb/csv-parser -- 96% code coverage"
-      Right="C++, CMake, gcov, Valgrind"  
+      Right="C++, CMake, gcov, Valgrind"
     >
       <List>
         <Item>A multi-threaded C++11 CSV parser featuring iterators and ability to parse at over 200MB/s</Item>
@@ -77,21 +63,23 @@
         <Item>A sexy resume generator</Item>
       </List>
     </Subsection>
-	<Subsection
-	  Title="Auto Cost Calculator"
-	  Subtitle="https://github.com/vincentlaucsb/Auto-Cost-Calculator"
-    Right="TypeScript, ReactJS"
+    <Subsection
+      Title="Auto Cost Calculator"
+      Subtitle="https://github.com/vincentlaucsb/Auto-Cost-Calculator"
+      Right="TypeScript, ReactJs"
 	>
-	  <List>
-		<Item>Utilized JavaScript/TypeScript and React to create tool to help consumers decide whether or not to buy a new (used) car</Item>
-		<Item>Integrated different JavaScript libraries to implement graphing and drag-and-drop functionality</Item>
-	  </List>
-	</Subsection>
+      <List>
+        <Item>Utilized JavaScript/TypeScript and React to create tool to help consumers decide whether or not to buy a new (used) car</Item>
+        <Item>Integrated different JavaScript libraries to implement graphing and drag-and-drop functionality</Item>
+      </List>
+    </Subsection>
   </Section>
   <Section Title="Technical Skills">
     <List>
       <Item Heading="Primary Languages">C++, C#, Java, TypeScript/JavaScript, Python, SQL</Item>
-      <Item Heading="Secondary Languages">Ruby, R, <b>CSS/SASS (e.g. this resume)</b>, JavaScript, LaTeX, Bash scripting, Procedural SQL</Item>
+      <Item Heading="Secondary Languages">
+        Ruby, R, <b>CSS/SASS (e.g. this resume)</b>, JavaScript, LaTeX, Bash scripting, Procedural SQL
+      </Item>
       <Item Heading="Frameworks">React, Ruby on Rails, Django, Boost, Windows Presentation Foundation (WPF)</Item>
       <Item Heading="Software/OS">Visual Studio, IntelliJ, MySQL, PostgreSQL, Git, Subversion, CMake, Makefile, Nginx, Linux, Windows</Item>
       <Item Heading="Data Analysis and Visualization">ggplot, numpy, PANDAS, dplyr, matplotlib</Item>

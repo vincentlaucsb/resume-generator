@@ -2,11 +2,13 @@ set(PUGIXML_DIR ${CMAKE_CURRENT_LIST_DIR}/pugixml)
 set(FMTLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/fmt)
 set(CTML_DIR ${CMAKE_CURRENT_LIST_DIR}/CTML)
 set(CXXOPTS_DIR ${CMAKE_CURRENT_LIST_DIR}/cxxopts)
+set(MSTCH_DIR ${CMAKE_CURRENT_LIST_DIR}/mstch/include/mstch)
 
 add_subdirectory(pugixml)
 add_subdirectory(fmt)
 add_subdirectory(CTML)
 add_subdirectory(cxxopts)
+add_subdirectory(mstch)
 
 add_library(resume_lib "")
 target_sources(resume_lib
@@ -23,7 +25,7 @@ target_sources(resume_lib
 add_executable(resume "")
 target_sources(resume PRIVATE resume.cpp)
 
-target_link_libraries(resume_lib pugixml fmt)
+target_link_libraries(resume_lib pugixml fmt mstch)
 target_link_libraries(resume resume_lib)
 
 target_include_directories(resume_lib
@@ -31,6 +33,7 @@ target_include_directories(resume_lib
 		${PUGIXML_DIR}/src
 		${FMTLIB_DIR}/include
 		${CTML_DIR}/include
+        ${MSTCH_DIR}
 )
 
 target_include_directories(resume PRIVATE ${CXXOPTS_DIR}/include)

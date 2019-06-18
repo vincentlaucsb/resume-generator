@@ -13,3 +13,6 @@
 [submodule "include/cxxopts"]
 	path = include/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
+[submodule "include/mstch"]
+	path = include/mstch
+	url = https://github.com/torbjoernk/mstch.git
