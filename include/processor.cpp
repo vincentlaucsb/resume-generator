@@ -50,13 +50,37 @@ namespace resume {
 
     std::string CustomXmlProcessor::render(XmlNode & custom_node)
     {
-        return this->render(this->get_attributes(custom_node));
+        Attributes attrs = this->get_attributes(custom_node);
+
+        mstch::map context;
+        for (auto&[key, val] : attrs) {
+            context[key] = val;
+        }
+
+        // TODO: Not working
+        for (auto& attr : optional_attrs) {
+            if (attrs.find(attr) == attrs.end()) {
+                context[attr + "Present"] = false;
+            }
+            else {
+                context[attr + "Present"] = true;
+            }
+        }
+
+        context["Text"] = std::string(custom_node.child_value());
+        return mstch::render(this->mstch_template, context);
     }
 
     std::string CustomXmlProcessor::render(Attributes& attrs) {
         mstch::map context;
         for (auto&[key, val] : attrs) {
             context[key] = val;
+        }
+
+        for (auto& attr : optional_attrs) {
+            if (attrs.find(attr) == attrs.end()) {
+                context[attr + "Present"] = false;
+            }
         }
 
         return mstch::render(this->mstch_template, context);

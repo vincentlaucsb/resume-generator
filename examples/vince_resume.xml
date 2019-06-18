@@ -14,6 +14,12 @@
           </p>
         </header>
     </Header>
+    <Item Optional="Header">
+      <li>
+        {{#HeaderPresent}}<b>{{Header}}</b>{{/HeaderPresent}}
+        {{Text}}
+      </li>
+    </Item>
   </CustomTags>
   <Header
     Email="vincela9@gmail.com"

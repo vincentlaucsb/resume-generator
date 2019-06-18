@@ -46,9 +46,9 @@ namespace resume {
 
             switch (child.type()) {
                 // Add text to section node
-            case pugi::xml_node_type::node_pcdata:
-                parent.AppendText(child.text().as_string());
-                break;
+            //case pugi::xml_node_type::node_pcdata:
+            //    parent.AppendText(child.text().as_string());
+            //    break;
 
                 // Only process XML tags
             case pugi::xml_node_type::node_element: {

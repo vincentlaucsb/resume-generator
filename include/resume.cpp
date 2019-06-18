@@ -35,7 +35,6 @@ int main(int argc, char ** argv)
         resume.add_rule("Section", process_section, { "Title" });
         resume.add_rule("Subsection", process_subsection, { "Title", "Subtitle", "Right" });
         resume.add_rule("List", process_list);
-        resume.add_rule("Item", process_item, { "Heading" });
 
         if (!resume.ok()) {
             std::cout << "Couldn't load " << input_xml << std::endl;
