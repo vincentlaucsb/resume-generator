@@ -8,33 +8,23 @@ namespace resume {
 
     class ResumeParser;
 
-    class IXmlProcessor {
+    class CustomXmlProcessor {
     public:
-        IXmlProcessor(std::set<std::string> optional = {}, std::set<std::string> required = {}) :
-            optional_attrs(optional), required_attrs(required) {};
+        CustomXmlProcessor() = default;
+        CustomXmlProcessor(const XmlNode& node);
 
-        IXmlProcessor& add_optional(std::string_view option) {
+        CustomXmlProcessor& add_optional(std::string_view option) {
             this->optional_attrs.emplace(option);
             return *this;
         }
 
-        IXmlProcessor& add_required(std::string_view option) {
+        CustomXmlProcessor& add_required(std::string_view option) {
             this->required_attrs.emplace(option);
             return *this;
         }
 
         // Grab the attributes from a node
         Attributes get_attributes(const XmlNode& node);
-
-    protected:
-        std::set<std::string> optional_attrs;
-        std::set<std::string> required_attrs;
-    };
-
-    class CustomXmlProcessor : public IXmlProcessor {
-    public:
-        CustomXmlProcessor() = default;
-        CustomXmlProcessor(const XmlNode& node);
 
         const std::string& get_template() { return this->mstch_template;  }
 
@@ -45,5 +35,11 @@ namespace resume {
     private:
         // Mustache template
         std::string mstch_template = "";
+
+        // Attribute transformations
+        std::map<std::string, std::string> attr_transforms = {};
+
+        std::set<std::string> optional_attrs;
+        std::set<std::string> required_attrs;
     };
 }

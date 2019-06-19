@@ -2,7 +2,7 @@
 #include "text.h"
 
 namespace resume {
-    Attributes IXmlProcessor::get_attributes(const XmlNode& node) {
+    Attributes CustomXmlProcessor::get_attributes(const XmlNode& node) {
         Attributes attrs;
 
         for (auto& attr : optional_attrs) {
@@ -18,9 +18,14 @@ namespace resume {
             attrs[attr] = attr_value;
         }
 
-        mstch::map attrs_temp;
+        mstch::map current_values;
         for (auto&[k, v] : attrs) {
-            attrs_temp[k] = v;
+            current_values[k] = v;
+        }
+
+        for (auto&[k, v] : attr_transforms) {
+            std::cout << "Setting " << k << " to " << mstch::render(v, current_values) << std::endl;
+            attrs[k] = mstch::render(v, current_values);
         }
 
         return attrs;
@@ -28,7 +33,7 @@ namespace resume {
 
     CustomXmlProcessor::CustomXmlProcessor(const XmlNode& node) {
         for (auto attr : node.attributes()) {
-            auto attr_name = attr.name();
+            std::string attr_name = attr.name();
             if (attr_name == "Optional") {
                 // Parse optional attributes
                 for (auto option : split<';'>(attr.value())) {
@@ -37,12 +42,15 @@ namespace resume {
             }
             else if (attr_name == "Required") {
                 // Parse required attributes
-                for (auto option : split<';'>(node.attribute("Required").as_string())) {
+                for (auto option : split<';'>(attr.value())) {
                     add_required(option);
                 }
             }
-
-            // Attribute transformations
+            else {
+                // Attribute transformations
+                std::cout << "Registering attribute transformation: " << attr_name << " - " << attr.value() << std::endl;
+                attr_transforms[attr_name] = attr.value();
+            }
         }
 
         // Add template
