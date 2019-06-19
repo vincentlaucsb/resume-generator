@@ -50,13 +50,13 @@ namespace resume {
         auto job_template = doc.first_child();
         CustomXmlProcessor processor(job_template);
 
-        std::string data = "<Job Employer=\"Raytheon Company\" Title=\"Software Engineer\" Start=\"January 2019\" End=\"Present\" />";
+        std::string data = "<Job Employer=\"Stingray Company\" Title=\"Software Engineer\" Start=\"January 2019\" End=\"Present\" />";
         pugi::xml_document data_doc;
         data_doc.load_string(data.c_str());
         auto data_node = data_doc.first_child();
 
         auto attrs = processor.get_attributes(data_node);
-        REQUIRE(attrs["Title"] == "Raytheon Company");
+        REQUIRE(attrs["Title"] == "Stingray Company");
         REQUIRE(attrs["Subtitle"] == "Software Engineer");
         REQUIRE(attrs["Right"] == "January 2019 -- Present");
     }

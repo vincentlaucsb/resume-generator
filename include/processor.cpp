@@ -71,7 +71,7 @@ namespace resume {
                 context[attr] = false;
             }
             else {
-                context[attr] = mstch::map({ { "Value", attrs.find(attr)->second } });
+                context[attr] = mstch::map({ { attr, attrs.find(attr)->second } });
             }
         }
 

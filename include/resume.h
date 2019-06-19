@@ -33,6 +33,8 @@ namespace resume {
             this->parse_stylesheets();
             this->parse_custom_tags();
             this->process_text(resume());
+
+            // Process resume data
             this->process_resume(resume());
             return this->get_html();
         }
@@ -66,6 +68,9 @@ namespace resume {
         }
 
     private:
+        // A map of processing rules
+        std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
+
         pugi::xml_document doc;
         CTML::Document html_document;
         pugi::xml_parse_result result;
@@ -107,6 +112,5 @@ namespace resume {
 
         // Recursively process XML nodes and create HTML
         std::string process_children(const XmlNode& node);
-        std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
     };
 }

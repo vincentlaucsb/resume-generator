@@ -42,29 +42,16 @@ namespace resume {
         for (auto child : node.children()) {
             // Only process XML tags
             if (child.type() == pugi::xml_node_type::node_element) {
+                std::string child_name = child.name();
+
                 // Look up associated rule for processing this node
-                if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
-                    std::cout << "Using custom rule " << child.name() << std::endl;
+                if (auto rule = this->custom_processors.find(child_name); rule != this->custom_processors.end()) {
+                    std::cout << "Using custom rule " << child_name << std::endl;
                     std::string processed_children = this->process_children(child);
-                    ret += this->custom_processors.find(child.name())->second.render(child, partials, processed_children);
+                    ret += rule->second.render(child, partials, processed_children);
                 }
                 else {
-                    // Treat as regular HTML tag if no hit
-                    std::string tag_name = child.name();
-
-                    // Strip out html_ prefix
-                    if (tag_name.substr(0, 5) == "html_") {
-                        tag_name = tag_name.substr(5);
-                    }
-
-                    std::cout << "Processing HTML tag " << tag_name << std::endl;
-
-                    CTML::Node html_node(tag_name);
-                    for (auto& attr : child.attributes()) {
-                        html_node.SetAttribute(attr.name(), attr.as_string());
-                    }
-
-                    ret += html_node.ToString();
+                    std::cout << "[Warning] Couldn't find rule to process" << child_name << std::endl;
                 }
             }
         }
