@@ -6,7 +6,9 @@ namespace resume {
         Attributes attrs;
 
         for (auto& attr : optional_attrs) {
-            attrs[attr] = node.attribute(attr.c_str()).as_string();
+            std::string attr_value = node.attribute(attr.c_str()).as_string();
+            if (!attr_value.empty())
+                attrs[attr] = attr_value;
         }
 
         for (auto& attr : required_attrs) {
@@ -36,24 +38,23 @@ namespace resume {
             if (attr_name == "Optional") {
                 // Parse optional attributes
                 for (auto option : split<';'>(attr.value())) {
-                    add_optional(option);
+                    optional_attrs.emplace(option);
                 }
             }
             else if (attr_name == "Required") {
                 // Parse required attributes
                 for (auto option : split<';'>(attr.value())) {
-                    add_required(option);
+                    required_attrs.emplace(option);
                 }
             }
             else {
                 // Attribute transformations
-                std::cout << "Registering attribute transformation: " << attr_name << " - " << attr.value() << std::endl;
                 attr_transforms[attr_name] = attr.value();
             }
         }
 
         // Add template
-        this->mstch_template += internals::parse_template(node);
+        this->mstch_template = internals::parse_template(node);
     }
 
     std::string CustomXmlProcessor::render(const XmlNode & custom_node, std::map<std::string, std::string> partials, std::string_view children)

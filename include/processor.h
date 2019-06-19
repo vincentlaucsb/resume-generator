@@ -15,16 +15,6 @@ namespace resume {
         CustomXmlProcessor() = default;
         CustomXmlProcessor(const XmlNode& node);
 
-        CustomXmlProcessor& add_optional(std::string_view option) {
-            this->optional_attrs.emplace(option);
-            return *this;
-        }
-
-        CustomXmlProcessor& add_required(std::string_view option) {
-            this->required_attrs.emplace(option);
-            return *this;
-        }
-
         // Grab the attributes from a node
         Attributes get_attributes(const XmlNode& node);
 
