@@ -24,9 +24,7 @@ namespace resume {
         };
 
         // Returns True if XML loaded successfully
-        bool ok() {
-            return bool(result);
-        }
+        bool ok() { return bool(result); }
 
         std::string generate() {
             this->set_title(resume().attribute("Title").as_string());
