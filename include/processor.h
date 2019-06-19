@@ -36,9 +36,11 @@ namespace resume {
         CustomXmlProcessor() = default;
         CustomXmlProcessor(const XmlNode& node);
 
+        const std::string& get_template() { return this->mstch_template;  }
+
         // Given attributes, fill in the XML template with said attribute values
         // and convert the template to an XmlNode object
-        std::string render(const XmlNode& custom_node, std::string_view children = "");
+        std::string render(const XmlNode& custom_node, std::map<std::string, std::string> partials = {}, std::string_view children = "");
 
     private:
         // Mustache template

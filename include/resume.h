@@ -106,7 +106,8 @@ namespace resume {
         // Parse user-defined tags
         void parse_custom_tags();
 
-        void process_custom_tags(XmlNode& node, XmlNode& parent);
+        // Create a mapping of partials
+        std::map<std::string, std::string> get_partials();
 
         // Recursively process XML nodes and create HTML
         std::string process_children(const XmlNode& node);

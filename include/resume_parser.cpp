@@ -26,7 +26,18 @@ namespace resume {
         resume().remove_child("Templates");
     }
 
+    std::map<std::string, std::string> ResumeParser::get_partials() {
+        std::map<std::string, std::string> ret;
+
+        for (auto&[name, processor] : this->custom_processors) {
+            ret[name] = processor.get_template();
+        }
+
+        return ret;
+    }
+
     std::string ResumeParser::process_children(const XmlNode& node) {
+        auto partials = this->get_partials();
         std::string ret;
         for (auto child : node.children()) {
             // Only process XML tags
@@ -35,7 +46,7 @@ namespace resume {
                 if (this->custom_processors.find(child.name()) != this->custom_processors.end()) {
                     std::cout << "Using custom rule " << child.name() << std::endl;
                     std::string processed_children = this->process_children(child);
-                    ret += this->custom_processors.find(child.name())->second.render(child, processed_children);
+                    ret += this->custom_processors.find(child.name())->second.render(child, partials, processed_children);
                 }
                 else {
                     // Treat as regular HTML tag if no hit

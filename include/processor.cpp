@@ -18,26 +18,31 @@ namespace resume {
             attrs[attr] = attr_value;
         }
 
+        mstch::map attrs_temp;
+        for (auto&[k, v] : attrs) {
+            attrs_temp[k] = v;
+        }
+
         return attrs;
     }
 
     CustomXmlProcessor::CustomXmlProcessor(const XmlNode& node) {
-        // Parse optional attributes
-        for (auto option : split<';'>(node.attribute("Optional").as_string())) {
-            add_optional(option);
-        }
+        for (auto attr : node.attributes()) {
+            auto attr_name = attr.name();
+            if (attr_name == "Optional") {
+                // Parse optional attributes
+                for (auto option : split<';'>(attr.value())) {
+                    add_optional(option);
+                }
+            }
+            else if (attr_name == "Required") {
+                // Parse required attributes
+                for (auto option : split<';'>(node.attribute("Required").as_string())) {
+                    add_required(option);
+                }
+            }
 
-        for (auto option : node.child("Optional")) {
-            add_optional(option.text().as_string());
-        }
-
-        // Parse required attributes
-        for (auto option : split<';'>(node.attribute("Required").as_string())) {
-            add_required(option);
-        }
-
-        for (auto option : node.child("Required")) {
-            add_required(option.text().as_string());
+            // Attribute transformations
         }
 
         // Add template
@@ -48,7 +53,7 @@ namespace resume {
         }
     }
 
-    std::string CustomXmlProcessor::render(const XmlNode & custom_node, std::string_view children)
+    std::string CustomXmlProcessor::render(const XmlNode & custom_node, std::map<std::string, std::string> partials, std::string_view children)
     {
         Attributes attrs = this->get_attributes(custom_node);
 
@@ -68,6 +73,6 @@ namespace resume {
 
         context["Children"] = std::string(children);
         context["Text"] = std::string(custom_node.child_value());
-        return mstch::render(this->mstch_template, context);
+        return mstch::render(this->mstch_template, context, partials);
     }
 }
