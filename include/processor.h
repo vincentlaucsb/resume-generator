@@ -5,8 +5,10 @@
 #include "common.h"
 
 namespace resume {
-
-    class ResumeParser;
+    namespace internals {
+        // Parse an XML defined template
+        std::string parse_template(const XmlNode& node);
+    }
 
     class CustomXmlProcessor {
     public:
@@ -26,7 +28,8 @@ namespace resume {
         // Grab the attributes from a node
         Attributes get_attributes(const XmlNode& node);
 
-        const std::string& get_template() { return this->mstch_template;  }
+        // Gets the Mustache template associated with this tag
+        const std::string& get_template() { return this->mstch_template; }
 
         // Given attributes, fill in the XML template with said attribute values
         // and convert the template to an XmlNode object

@@ -24,7 +24,6 @@ namespace resume {
         }
 
         for (auto&[k, v] : attr_transforms) {
-            std::cout << "Setting " << k << " to " << mstch::render(v, current_values) << std::endl;
             attrs[k] = mstch::render(v, current_values);
         }
 
@@ -54,11 +53,7 @@ namespace resume {
         }
 
         // Add template
-        xml_string_writer writer;
-        for (auto child : node.children()) {
-            child.print(writer);
-            this->mstch_template += writer.result;
-        }
+        this->mstch_template += internals::parse_template(node);
     }
 
     std::string CustomXmlProcessor::render(const XmlNode & custom_node, std::map<std::string, std::string> partials, std::string_view children)
@@ -83,4 +78,21 @@ namespace resume {
         context["Text"] = std::string(custom_node.child_value());
         return mstch::render(this->mstch_template, context, partials);
     }
+}
+
+std::string resume::internals::parse_template(const XmlNode & node)
+{
+    std::string mstch_template;
+    xml_string_writer writer;
+    for (auto child : node.children()) {
+        if (child.type() == pugi::xml_node_type::node_cdata) {
+            mstch_template += child.value();
+        }
+        else {
+            child.print(writer);
+            mstch_template += writer.result;
+        }
+    }
+
+    return mstch_template;
 }
