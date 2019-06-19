@@ -32,10 +32,10 @@ namespace resume {
             this->set_title(resume().attribute("Title").as_string());
             this->parse_stylesheets();
             this->parse_custom_tags();
-            this->process_text(resume());
 
             // Process resume data
             this->process_resume(resume());
+
             return this->get_html();
         }
 
@@ -46,7 +46,14 @@ namespace resume {
 
         void process_resume(XmlNode node) {
             auto & body = this->html_document.body();
-            body.AppendText(this->process_children(node));
+            std::string body_text = this->process_children(node);
+            
+            // Do some text processing
+            dashify(body_text);
+            url(body_text);
+
+            // Append text to body
+            body.AppendText(body_text);
         }
 
         void set_title(const std::string& text) {
@@ -74,31 +81,6 @@ namespace resume {
         pugi::xml_document doc;
         CTML::Document html_document;
         pugi::xml_parse_result result;
-
-        // Convert URLs to <a> tags and so on
-        void process_text(XmlNode node) {
-            class my_walker: public pugi::xml_tree_walker
-            {
-            public:
-                virtual bool begin(pugi::xml_node& node) override { return true;  }
-                virtual bool end(pugi::xml_node& node) override { return true; }
-
-                virtual bool for_each(pugi::xml_node& node) override {
-                    // Perform text processings
-                    for (auto& attr: node.attributes()) {
-                        std::string attr_value = attr.value();
-                        dashify(attr_value);
-                        url(attr_value);
-                        attr.set_value(attr_value.c_str());
-                    }
-
-                    return true;
-                };
-            };
-
-            my_walker walker;
-            node.traverse(walker);
-        }
 
         // Parse stylesheets
         void parse_stylesheets();
