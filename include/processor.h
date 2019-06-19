@@ -32,7 +32,10 @@ namespace resume {
         // Attribute transformations
         std::map<std::string, std::string> attr_transforms = {};
 
+        // Optional attributes for this tag
         std::set<std::string> optional_attrs;
+
+        // Required attributes for this tag
         std::set<std::string> required_attrs;
     };
 }

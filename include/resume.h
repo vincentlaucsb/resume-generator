@@ -75,8 +75,7 @@ namespace resume {
         CTML::Document html_document;
         pugi::xml_parse_result result;
 
-        void set_title();
-
+        // Convert URLs to <a> tags and so on
         void process_text(XmlNode node) {
             class my_walker: public pugi::xml_tree_walker
             {
