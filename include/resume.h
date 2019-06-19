@@ -39,6 +39,14 @@ namespace resume {
             return this->get_html();
         }
 
+    private:
+        // A map of processing rules
+        std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
+
+        pugi::xml_document doc;
+        CTML::Document html_document;
+        pugi::xml_parse_result result;
+
         // Get the <Resume> node
         pugi::xml_node resume() {
             return doc.child("Resume");
@@ -47,7 +55,7 @@ namespace resume {
         void process_resume(XmlNode node) {
             auto & body = this->html_document.body();
             std::string body_text = this->process_children(node);
-            
+
             // Do some text processing
             dashify(body_text);
             url(body_text);
@@ -73,14 +81,6 @@ namespace resume {
         std::string get_html() {
             return this->html_document.ToString();
         }
-
-    private:
-        // A map of processing rules
-        std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
-
-        pugi::xml_document doc;
-        CTML::Document html_document;
-        pugi::xml_parse_result result;
 
         // Parse stylesheets
         void parse_stylesheets();
