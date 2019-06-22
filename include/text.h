@@ -55,7 +55,7 @@ namespace resume {
 
     std::string& replace(std::string& str, std::string_view substr, std::string_view replace);
 
-    // Converts -- to &mdash;
+    // Converts --- to &mdash and -- to &ndash;
     void dashify(std::string& str);
 
     template<char Delim>

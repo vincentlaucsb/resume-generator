@@ -20,9 +20,24 @@ namespace resume {
             attrs[attr] = attr_value;
         }
 
+        // Transform attributes
         mstch::map current_values;
+        current_values["link"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
+            return fmt::format("<a href=\"{}\">{}</a>", url, url);
+        } };
+
         for (auto&[k, v] : attrs) {
             current_values[k] = v;
+        }
+
+        // Allow for optional attributes in transforms
+        for (auto& attr : optional_attrs) {
+            if (attrs.find(attr) == attrs.end()) {
+                current_values[attr] = false;
+            }
+            else {
+                current_values[attr] = mstch::map({ { attr, attrs.find(attr)->second } });
+            }
         }
 
         for (auto&[k, v] : attr_transforms) {
@@ -62,6 +77,10 @@ namespace resume {
         Attributes attrs = this->get_attributes(custom_node);
 
         mstch::map context;
+        context["link"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
+            return fmt::format("<a href=\"{}\">{}</a>", url, url);
+        }};
+
         for (auto&[key, val] : attrs) {
             context[key] = val;
         }

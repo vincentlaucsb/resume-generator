@@ -26,6 +26,7 @@ namespace resume {
 
     // Converts -- to &mdash;
     void dashify(std::string& str) {
+        replace(str, "---", "&mdash;");
         replace(str, "--", "&ndash;");
     }
 

@@ -19,7 +19,7 @@ namespace resume {
         "    Optional = \"Start; End\""
         "    Subtitle = \"{{Title}}\""
         "    Title = \"{{Employer}}\""
-        "    Right = \"{{Start}} -- {{End}}\""
+        "    Right = \"{{#Start}}{{#End}}{{Start}} -- {{End}}{{/End}}{{/Start}}\""
         ">"
         "    <![CDATA[{{> Subsection}}]]>"
         "</Job>";
