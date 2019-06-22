@@ -29,11 +29,6 @@ namespace resume {
         replace(str, "--", "&ndash;");
     }
 
-    void url(std::string& str) {
-        std::regex url_re("((?:(?:https*:\/\/)|(?:www))[A-Za-z1-9.?/=&-]*)");
-        str = std::regex_replace(str, url_re, "<a href=\"$&\">$&</a>");
-    }
-
     std::string format(std::string_view str, const std::unordered_map<std::string, std::string>& args)
     {
         bool in_key = false;

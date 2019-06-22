@@ -56,7 +56,6 @@ namespace resume {
 
             // Do some text processing
             dashify(body_text);
-            url(body_text);
 
             // Append text to body
             body.AppendText(body_text);

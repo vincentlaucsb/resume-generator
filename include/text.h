@@ -58,8 +58,6 @@ namespace resume {
     // Converts -- to &mdash;
     void dashify(std::string& str);
 
-    // Wraps URLs with <a> tags
-    void url(std::string& str);
     template<char Delim>
     std::vector<std::string> split(std::string_view in)
     {
