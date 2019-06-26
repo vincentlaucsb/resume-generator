@@ -80,6 +80,9 @@ namespace resume {
         context["link"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
             return fmt::format("<a href=\"{}\">{}</a>", url, url);
         }};
+        context["stylesheet"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
+            return fmt::format("<link href=\"{}\" rel=\"stylesheet\" type=\"text/css\"/>", url);
+        }};
 
         for (auto&[key, val] : attrs) {
             context[key] = val;

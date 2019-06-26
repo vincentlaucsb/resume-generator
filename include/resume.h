@@ -27,14 +27,11 @@ namespace resume {
         bool ok() { return bool(result); }
 
         std::string generate() {
-            this->set_title(resume().attribute("Title").as_string());
-            this->parse_stylesheets();
+            this->parse_template();
             this->parse_custom_tags();
 
             // Process resume data
-            this->process_resume(resume());
-
-            return this->get_html();
+            return this->process_resume(resume());
         }
 
     private:
@@ -42,29 +39,50 @@ namespace resume {
         std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
 
         pugi::xml_document doc;
-        CTML::Document html_document;
         pugi::xml_parse_result result;
+        std::string html_template;
 
         // Get the <Resume> node
         pugi::xml_node resume() {
             return doc.child("Resume");
         }
 
-        void process_resume(XmlNode node) {
-            auto & body = this->html_document.body();
-            std::string body_text = this->process_children(node);
+        std::string process_resume(XmlNode node) {
+            auto partials = this->get_partials();
+            std::string ret;
+            mstch::map values;
+            values["link"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
+    return fmt::format("<a href=\"{}\">{}</a>", url, url);
+} };
+            values["stylesheet"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
+                return fmt::format("<link href=\"{}\" rel=\"stylesheet\" type=\"text/css\"/>", url);
+            } };
+
+            // Convert all <Resume> attributes to usable variables
+            for (auto attr : resume().attributes()) {
+                values[attr.name()] = std::string(attr.value());
+            }
+
+            // Fill in mstch::map with recursively computed
+            // values for top-level entries
+            for (auto child : node.children()) {
+                std::string child_name = child.name();
+                if (auto rule = this->custom_processors.find(child_name); rule != this->custom_processors.end()) {
+                    std::cout << "Using custom rule " << child_name << std::endl;
+                    std::string processed_children = this->process_children(child);
+                    values[child.name()] = rule->second.render(child, partials, processed_children);
+                }
+                else {
+                    std::cout << "[Warning] Couldn't find rule to process" << child_name << std::endl;
+                }
+            }
+
+            ret = mstch::render(this->html_template, values);
 
             // Do some text processing
-            dashify(body_text);
+            dashify(ret);
 
-            // Append text to body
-            body.AppendText(body_text);
-        }
-
-        void set_title(const std::string& text) {
-            this->html_document.AppendNodeToHead(
-                CTML::Node("title", text)
-            );
+            return ret;
         }
 
         void add_custom_rule(const std::string& section_name, const CustomXmlProcessor& proc) {
@@ -75,9 +93,8 @@ namespace resume {
             this->custom_processors[section_name] = proc;
         }
 
-        std::string get_html() {
-            return this->html_document.ToString();
-        }
+        // Parse main template
+        void parse_template();
 
         // Parse stylesheets
         void parse_stylesheets();

@@ -1,18 +1,14 @@
 #include "resume.h"
 
 namespace resume {
-    void ResumeParser::parse_stylesheets()
+    void ResumeParser::parse_template()
     {
-        for (auto style : this->resume().children("Stylesheet")) {
-            this->html_document.AppendNodeToHead(
-                CTML::Node("link")
-                .SetAttribute("rel", "stylesheet")
-                .SetAttribute("type", "text/css")
-                .SetAttribute("href", style.text().as_string())
-            );
-        }
+        auto templates = this->resume().child("Templates"),
+            node = templates.child("Body");
+        this->html_template = internals::parse_template(node);
 
-        while (resume().remove_child("Stylesheet"));
+        // Remove node once we're done
+        templates.remove_child(node);
     }
 
     void ResumeParser::parse_custom_tags() {
