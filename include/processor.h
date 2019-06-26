@@ -10,6 +10,14 @@ namespace resume {
         std::string parse_template(const XmlNode& node);
     }
 
+    static const mstch::map DEFAULT_CONTEXT = {
+        {"link", mstch::lambda{ [](const std::string& url) -> mstch::node {
+            return fmt::format("<a href=\"{}\">{}</a>", url, url); }}},
+        {"stylesheet", mstch::lambda{ [](const std::string& url) -> mstch::node {
+            return fmt::format("<link href=\"{}\" rel=\"stylesheet\" type=\"text/css\"/>", url);
+        }}}
+    };
+
     class CustomXmlProcessor {
     public:
         CustomXmlProcessor() = default;

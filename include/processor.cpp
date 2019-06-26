@@ -21,11 +21,7 @@ namespace resume {
         }
 
         // Transform attributes
-        mstch::map current_values;
-        current_values["link"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
-            return fmt::format("<a href=\"{}\">{}</a>", url, url);
-        } };
-
+        mstch::map current_values = DEFAULT_CONTEXT;
         for (auto&[k, v] : attrs) {
             current_values[k] = v;
         }
@@ -75,14 +71,7 @@ namespace resume {
     std::string CustomXmlProcessor::render(const XmlNode & custom_node, std::map<std::string, std::string> partials, std::string_view children)
     {
         Attributes attrs = this->get_attributes(custom_node);
-
-        mstch::map context;
-        context["link"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
-            return fmt::format("<a href=\"{}\">{}</a>", url, url);
-        }};
-        context["stylesheet"] = mstch::lambda{ [](const std::string& url) -> mstch::node {
-            return fmt::format("<link href=\"{}\" rel=\"stylesheet\" type=\"text/css\"/>", url);
-        }};
+        mstch::map context = DEFAULT_CONTEXT;
 
         for (auto&[key, val] : attrs) {
             context[key] = val;
