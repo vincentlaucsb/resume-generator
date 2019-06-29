@@ -35,14 +35,7 @@ namespace resume {
         }
 
         // Set the list of template XML files
-        void set_template_xml(const std::vector<std::string>& files) {
-            for (auto& file : files) {
-                // Avoid adding duplicate files
-                if (std::find(this->template_xml.begin(), this->template_xml.end(), file) == this->template_xml.end()) {
-                    this->template_xml.push_back(file);
-                }
-            }
-        }
+        void set_template_xml(const std::vector<std::string>& files);
 
     private:
         // A map of processing rules

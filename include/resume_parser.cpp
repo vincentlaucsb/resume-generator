@@ -1,6 +1,16 @@
 #include "resume.h"
 
 namespace resume {
+    void ResumeParser::set_template_xml(const std::vector<std::string>& files)
+    {
+        for (auto& file : files) {
+            // Avoid adding duplicate files
+            if (std::find(this->template_xml.begin(), this->template_xml.end(), file) == this->template_xml.end()) {
+                this->template_xml.push_back(file);
+            }
+        }
+    }
+
     std::string ResumeParser::process_resume(XmlNode node)
     {
         std::string ret;
@@ -23,7 +33,7 @@ namespace resume {
                 values[child.name()] = processor.render(child, this->partials, processed_children);
             }
             else {
-                std::cout << "[Warning] Couldn't find rule to process" << child_name << std::endl;
+                std::cout << "[Warning] Couldn't find rule to process " << child_name << std::endl;
             }
         }
 
@@ -107,7 +117,6 @@ namespace resume {
 
                 // Look up associated rule for processing this node
                 if (auto rule = this->custom_processors.find(child_name); rule != this->custom_processors.end()) {
-                    std::cout << "Using custom rule " << child_name << std::endl;
                     std::string processed_children = this->process_children(child);
                     ret += rule->second.render(child, this->partials, processed_children);
                 }
