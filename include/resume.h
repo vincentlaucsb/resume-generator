@@ -34,6 +34,8 @@ namespace resume {
             return this->process_resume(resume());
         }
 
+        std::string template_xml;
+
     private:
         // A map of processing rules
         std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};

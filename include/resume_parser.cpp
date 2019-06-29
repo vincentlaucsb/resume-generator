@@ -16,9 +16,11 @@ namespace resume {
         for (auto child : node.children()) {
             std::string child_name = child.name();
             if (auto rule = this->custom_processors.find(child_name); rule != this->custom_processors.end()) {
+                auto& [name, processor] = *rule;
+
                 std::cout << "Using custom rule " << child_name << std::endl;
                 std::string processed_children = this->process_children(child);
-                values[child.name()] = rule->second.render(child, this->partials, processed_children);
+                values[child.name()] = processor.render(child, this->partials, processed_children);
             }
             else {
                 std::cout << "[Warning] Couldn't find rule to process" << child_name << std::endl;
@@ -45,13 +47,12 @@ namespace resume {
     void ResumeParser::parse_templates() {
         auto custom_tags = resume().child("Templates");
         pugi::xml_document templates;
-        auto load_template_result = templates.load_file("templates.xml");
-        ("templates.xml");
+        auto load_template_result = templates.load_file(this->template_xml.c_str());
 
         if (custom_tags.empty()) {
-            std::cout << "[Info] Reading templates from templates.xml" << std::endl;
+            std::cout << "[Info] Reading templates from " << this->template_xml << std::endl;
             if (!(bool)(load_template_result)) {
-                std::cout << "[Warning] Couldn't find templates.xml" << std::endl;
+                std::cout << "[Warning] Couldn't find " << this->template_xml << std::endl;
             }
             else {
                 custom_tags = templates.child("Templates");
