@@ -28,8 +28,7 @@ namespace resume {
 
         // Generate a resume
         std::string generate() {
-            this->parse_template();
-            this->parse_custom_tags();
+            this->parse_templates();
 
             // Process resume data
             return this->process_resume(resume());
@@ -56,13 +55,10 @@ namespace resume {
         void add_custom_rule(const std::string& section_name, const CustomXmlProcessor& proc);
 
         // Parse main template
-        void parse_template();
+        void parse_templates();
 
         // Parse stylesheets
         void parse_stylesheets();
-
-        // Parse user-defined tags
-        void parse_custom_tags();
 
         // Create a mapping of partials
         std::map<std::string, std::string> get_partials();

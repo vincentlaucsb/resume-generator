@@ -42,18 +42,26 @@ namespace resume {
         this->custom_processors[section_name] = proc;
     }
 
-    void ResumeParser::parse_template()
-    {
-        auto templates = this->resume().child("Templates"),
-            node = templates.child("Body");
-        this->html_template = internals::parse_template(node);
-
-        // Remove node once we're done
-        templates.remove_child(node);
-    }
-
-    void ResumeParser::parse_custom_tags() {
+    void ResumeParser::parse_templates() {
         auto custom_tags = resume().child("Templates");
+        pugi::xml_document templates;
+        auto load_template_result = templates.load_file("templates.xml");
+        ("templates.xml");
+
+        if (custom_tags.empty()) {
+            std::cout << "[Info] Reading templates from templates.xml" << std::endl;
+            if (!(bool)(load_template_result)) {
+                std::cout << "[Warning] Couldn't find templates.xml" << std::endl;
+            }
+            else {
+                custom_tags = templates.child("Templates");
+            }
+        }
+
+        // Load HTML template
+        this->html_template = internals::parse_template(custom_tags.child("Body"));
+
+        // Load custom tags
         for (auto section : custom_tags) {
             std::cout << "Reading custom rule " << section.name() << std::endl;
             this->add_custom_rule(section.name(), CustomXmlProcessor(section));
@@ -89,7 +97,7 @@ namespace resume {
                     ret += rule->second.render(child, this->partials, processed_children);
                 }
                 else {
-                    std::cout << "[Warning] Couldn't find rule to process" << child_name << std::endl;
+                    std::cout << "[Warning] Couldn't find rule to process " << child_name << std::endl;
                 }
             }
         }
