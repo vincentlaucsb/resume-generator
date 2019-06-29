@@ -12,7 +12,7 @@ int main(int argc, char ** argv)
     options.add_options()
         ("input", "Input XML name", cxxopts::value<std::string>())
         ("o,output", "Output HTML name", cxxopts::value<std::string>()->default_value(""))
-        ("t,template", "Template XML file", cxxopts::value<std::string>()->default_value("templates.xml"))
+        ("t,template", "Template XML file", cxxopts::value<std::vector<std::string>>()->default_value("templates.xml"))
         ;
 
     if (argc < 2) {
@@ -24,8 +24,9 @@ int main(int argc, char ** argv)
         auto result = options.parse(argc, argv);
 
         std::string input_xml = result["input"].as<std::string>(),
-            template_xml = result["template"].as<std::string>(),
             output = result["output"].as<std::string>();
+
+        std::vector<std::string> template_xml = result["template"].as<std::vector<std::string>>();
 
         if (output.empty()) {
             output = input_xml;
@@ -33,7 +34,7 @@ int main(int argc, char ** argv)
         }
 
         ResumeParser resume(input_xml.c_str());
-        resume.template_xml = template_xml;
+        resume.set_template_xml(template_xml);
 
         if (!resume.ok()) {
             std::cout << "Couldn't load " << input_xml << std::endl;

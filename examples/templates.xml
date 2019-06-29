@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Templates>
+    <Body>
+        <![CDATA[
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <title>{{Title}}</title>
+        {{#stylesheet}}resume.css"{{/stylesheet}}
+        {{#stylesheet}}https://fonts.googleapis.com/css?family=Montserrat:400,500,700"{{/stylesheet}}
+        </head>
+        <body>
+        <header>
+            <a href="http://vincela.com/">
+            <h1 id="name">{{Name}}</h1>
+            </a>
+            <p>
+            {{#Address}}<span>{{Address}}</span>{{/Address}}
+            {{#Email}}<a href="mailto:{{Email}}"><span>{{Email}}</span></a>{{/Email}}
+            {{#LinkedIn}}<span><a href="https://{{LinkedIn}}">{{LinkedIn}}</a></span>{{/LinkedIn}}
+            {{#Website}}<span><a href="http://{{Website}}">{{Website}}</a></span>{{/Website}}
+            </p>
+        </header>
+        {{{Experience}}}
+        {{{Job}}}
+        {{{Education}}}
+        {{{Skills}}}
+        {{{Projects}}}
+        </body>
+        </html>
+        ]]>
+    </Body>
+    <Section Required="Title">
+        <section>
+        <h2>{{Title}}</h2>
+        {{{Children}}}
+        </section>
+    </Section>
+    <Subsection Required="Title" Optional="Subtitle; Right">
+        <div class="subsection">
+        <h3>
+            {{Title}}
+            {{#Right}}<span>{{Right}}</span>{{/Right}}
+        </h3>
+        {{#Subtitle}}<p class="subtitle">{{{Subtitle}}}</p>{{/Subtitle}}
+        {{{Children}}}
+        </div>
+    </Subsection>
+    <Subsubsection Required="Title" Optional="Subtitle; Right">
+        <div class="subsubsection">
+        <h4>
+            {{Title}}
+            {{#Right}}<span>{{Right}}</span>{{/Right}}
+        </h4>
+        {{#Subtitle}}<p class="subtitle">{{{Subtitle}}}</p>{{/Subtitle}}
+        {{{Children}}}
+        </div>
+    </Subsubsection>
+    <Skills>
+        <section>
+        <h2>Technical Skills</h2>
+        <table>
+        {{{Children}}}
+        </table>
+        </section>
+    </Skills>
+    <SkillList Required="Header">
+        <tr>
+        <th class="skill-header">{{Header}}</th>
+        <td>{{Text}}</td>
+        </tr>
+    </SkillList>
+    <Items>
+        <ul>
+        {{{Children}}}
+        </ul>
+    </Items>
+    <Item Optional="Heading">
+        <li>
+        {{#Heading}}
+        <b>{{Heading}}</b>
+        {{/Heading}}
+        {{Text}}
+        </li>
+    </Item>
+	
+    <!-- Section Based Templates -->
+    <Experience Title="Work Experience">
+	    <![CDATA[{{> Section}}]]>
+    </Experience>
+	
+    <Education Title="Education">
+	    <![CDATA[{{> Section}}]]>
+    </Education>
+	
+    <Projects Title="Projects">
+	    <![CDATA[{{> Section}}]]>
+    </Projects>
+	
+    <!-- Subsection Based Templates -->
+    <Job
+    Required="Employer; Title;"
+	    Optional="Start; End"
+    Subtitle="{{Title}}"
+    Title="{{Employer}}"
+    Right="{{#Start}}{{Start}}{{#End}} -- {{End}}{{/End}}{{^End}} -- Present{{/End}}{{/Start}}">
+    <![CDATA[{{> Subsection}}]]>
+    </Job>
+    
+    <Project
+	    Required="Name"
+	    Optional="Url; Tagline; TechStack"
+    Title="{{Name}}"
+	    Subtitle="{{#Url}}{{#link}}{{Url}}{{/link}}{{/Url}}{{#Tagline}} -- {{Tagline}}{{/Tagline}}"
+	    Right="{{#TechStack}}{{{TechStack}}}{{/TechStack}}">
+        <![CDATA[{{> Subsection}}]]>
+    </Project>
+    
+    <School Required="Name; Start; End; Degree" Optional="GPA"
+	    Title="{{Name}}"
+    Subtitle="{{Degree}}{{#GPA}} -- {{GPA}}{{/GPA}}"
+	    Right="{{Start}} -- {{End}}">
+        <![CDATA[{{> Subsection}}]]>
+    </School>
+</Templates>

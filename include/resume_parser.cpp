@@ -38,41 +38,55 @@ namespace resume {
     void ResumeParser::add_custom_rule(const std::string & section_name, const CustomXmlProcessor & proc)
     {
         if (this->custom_processors.find(section_name) != this->custom_processors.end()) {
-            throw std::runtime_error("[Error] Rule for " + section_name + " already exists.");
+            std::cout << "[Info] Overriding previously defined rule " << section_name << std::endl;
         }
 
         this->custom_processors[section_name] = proc;
     }
 
     void ResumeParser::parse_templates() {
+        // First, look for <Templates> node in current resume
         auto custom_tags = resume().child("Templates");
-        pugi::xml_document templates;
-        auto load_template_result = templates.load_file(this->template_xml.c_str());
+        if (!custom_tags.empty()) {
+            this->load_custom_tags(custom_tags);
 
-        if (custom_tags.empty()) {
-            std::cout << "[Info] Reading templates from " << this->template_xml << std::endl;
-            if (!(bool)(load_template_result)) {
-                std::cout << "[Warning] Couldn't find " << this->template_xml << std::endl;
-            }
-            else {
-                custom_tags = templates.child("Templates");
-            }
+            // Load HTML template
+            this->html_template = internals::parse_template(custom_tags.child("Body"));
+
+            // Remove once we're done
+            resume().remove_child("Templates");
         }
 
-        // Load HTML template
-        this->html_template = internals::parse_template(custom_tags.child("Body"));
+        // Then, look in given template XML files
+        for (auto& xml_file : this->template_xml) {
+            pugi::xml_document templates;
+            auto load_template_result = templates.load_file(xml_file.c_str());
+            if (!(bool)(load_template_result)) {
+                std::cout << "[Warning] Couldn't find " << xml_file << std::endl;
+                continue;
+            }
+                
+            std::cout << "[Info] Reading templates from " << xml_file << std::endl;
+            custom_tags = templates.child("Templates");
+            this->load_custom_tags(custom_tags);
 
-        // Load custom tags
-        for (auto section : custom_tags) {
-            std::cout << "Reading custom rule " << section.name() << std::endl;
-            this->add_custom_rule(section.name(), CustomXmlProcessor(section));
+            // Load or replace HTML template
+            if (auto body = custom_tags.child("Body"); !body.empty()) {
+                this->html_template = internals::parse_template(body);
+            }
         }
 
         // Update partials
         this->partials = this->get_partials();
+    }
 
-        // Remove once we're done
-        resume().remove_child("Templates");
+    void ResumeParser::load_custom_tags(const XmlNode& custom_tags)
+    {
+        // Load custom tags
+        for (auto section : custom_tags) {
+            std::cout << "[Info] Reading custom rule " << section.name() << std::endl;
+            this->add_custom_rule(section.name(), CustomXmlProcessor(section));
+        }
     }
 
     std::map<std::string, std::string> ResumeParser::get_partials() {

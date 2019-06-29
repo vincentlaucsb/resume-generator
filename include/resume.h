@@ -34,12 +34,23 @@ namespace resume {
             return this->process_resume(resume());
         }
 
-        std::string template_xml;
+        // Set the list of template XML files
+        void set_template_xml(const std::vector<std::string>& files) {
+            for (auto& file : files) {
+                // Avoid adding duplicate files
+                if (std::find(this->template_xml.begin(), this->template_xml.end(), file) == this->template_xml.end()) {
+                    this->template_xml.push_back(file);
+                }
+            }
+        }
 
     private:
         // A map of processing rules
         std::unordered_map<std::string, CustomXmlProcessor> custom_processors = {};
         std::map<std::string, std::string> partials = {};
+
+        // A list of template XML files to process
+        std::vector<std::string> template_xml;
 
         pugi::xml_document doc;
         pugi::xml_parse_result result;
@@ -58,6 +69,11 @@ namespace resume {
 
         // Parse main template
         void parse_templates();
+
+        // Helper for parse_templates() which parses an XML node containing a custom tag
+        //
+        // custom_tags: An XML node whose children are tag templates
+        void load_custom_tags(const XmlNode& custom_tags);
 
         // Parse stylesheets
         void parse_stylesheets();
